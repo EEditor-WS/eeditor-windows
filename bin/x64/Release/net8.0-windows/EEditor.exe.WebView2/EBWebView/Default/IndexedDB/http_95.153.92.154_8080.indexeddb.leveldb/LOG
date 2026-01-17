@@ -1,0 +1,6 @@
+2026/01/17-22:33:46.205 4140 Creating DB C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\IndexedDB\http_95.153.92.154_8080.indexeddb.leveldb since it was missing.
+2026/01/17-22:33:46.237 4140 Reusing MANIFEST C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\IndexedDB\http_95.153.92.154_8080.indexeddb.leveldb/MANIFEST-000001
+2026/01/17-22:33:46.270 26c0 Level-0 table #5: started
+2026/01/17-22:33:46.277 26c0 Level-0 table #5: 834 bytes OK
+2026/01/17-22:33:46.281 26c0 Delete type=0 #3
+2026/01/17-22:33:46.282 26c0 Manual compaction at level-0 from '\x00\x01\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x02\x00\x00\x00' @ 0 : 0; will stop at (end)

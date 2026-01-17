@@ -1,0 +1,14 @@
+2026/01/16-21:30:58.621 2cdc Reusing MANIFEST C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\IndexedDB\https_eeditor-ws.vercel.app_0.indexeddb.leveldb/MANIFEST-000001
+2026/01/16-21:30:58.623 2cdc Recovering log #1250
+2026/01/16-21:30:58.624 2cdc Reusing old log C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\IndexedDB\https_eeditor-ws.vercel.app_0.indexeddb.leveldb/001250.log 
+2026/01/16-21:30:58.626 2cdc Delete type=2 #1248
+2026/01/16-21:30:58.652 2a0c Level-0 table #1255: started
+2026/01/16-21:30:58.658 2a0c Level-0 table #1255: 2982 bytes OK
+2026/01/16-21:30:58.662 2a0c Delete type=0 #1250
+2026/01/16-21:30:58.668 2a0c Manual compaction at level-0 from ' w\x01\x00\x00\x00' @ 72057594037927935 : 1 .. ' x\x01\x00\x00\x00' @ 0 : 0; will stop at ' w\x01\x00\x00\x05' @ 17343 : 1
+2026/01/16-21:30:58.670 2a0c Compacting 1@0 + 1@1 files
+2026/01/16-21:30:58.678 2a0c Generated table #1256@0: 292 keys, 4218 bytes
+2026/01/16-21:30:58.678 2a0c Compacted 1@0 + 1@1 files => 4218 bytes
+2026/01/16-21:30:58.696 2a0c compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/01/16-21:30:58.698 2a0c Delete type=2 #1255
+2026/01/16-21:30:58.709 2a0c Manual compaction at level-0 from ' w\x01\x00\x00\x05' @ 17343 : 1 .. ' x\x01\x00\x00\x00' @ 0 : 0; will stop at (end)

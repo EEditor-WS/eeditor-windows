@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>EEditor</id>
+    <version>1.0.0</version>
+    <authors>EEditor</authors>
+    <description>Package Description</description>
+    <repository type="git" />
+    <dependencies>
+      <group targetFramework="net8.0-windows7.0">
+        <dependency id="Microsoft.Web.WebView2" version="1.0.3065.39" exclude="Build,Analyzers" />
+        <dependency id="NetDiscordRpc" version="1.0.2" exclude="Build,Analyzers" />
+        <dependency id="System.Runtime.InteropServices" version="4.3.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <frameworkReferences>
+      <group targetFramework="net8.0-windows7.0">
+        <frameworkReference name="Microsoft.WindowsDesktop.App.WPF" />
+      </group>
+    </frameworkReferences>
+    <contentFiles>
+      <files include="any/net8.0-windows7.0/ico.ico" buildAction="Content" />
+    </contentFiles>
+  </metadata>
+  <files>
+    <file src="C:\Users\eenot\source\repos\EEditor\bin\x64\Debug\net8.0-windows\EEditor.runtimeconfig.json" target="lib\net8.0-windows7.0\EEditor.runtimeconfig.json" />
+    <file src="C:\Users\eenot\source\repos\EEditor\bin\x64\Debug\net8.0-windows\EEditor.dll" target="lib\net8.0-windows7.0\EEditor.dll" />
+    <file src="C:\Users\eenot\source\repos\EEditor\ico.ico" target="content\ico.ico" />
+    <file src="C:\Users\eenot\source\repos\EEditor\ico.ico" target="contentFiles\any\net8.0-windows7.0\ico.ico" />
+  </files>
+</package>
