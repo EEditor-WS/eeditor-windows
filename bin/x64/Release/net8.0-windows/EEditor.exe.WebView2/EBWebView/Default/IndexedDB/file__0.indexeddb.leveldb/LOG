@@ -1,70 +1,14 @@
-2026/01/17-22:44:41.650 2028 Reusing MANIFEST C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\IndexedDB\file__0.indexeddb.leveldb/MANIFEST-000001
-2026/01/17-22:44:41.652 2028 Recovering log #23
-2026/01/17-22:44:41.652 2028 Reusing old log C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\IndexedDB\file__0.indexeddb.leveldb/000023.log 
-2026/01/17-22:44:41.653 2028 Delete type=2 #21
-2026/01/17-22:44:41.750 2960 Level-0 table #28: started
-2026/01/17-22:44:41.753 2960 Level-0 table #28: 1793 bytes OK
-2026/01/17-22:44:41.755 2960 Delete type=0 #23
-2026/01/17-22:44:41.756 3eec Manual compaction at level-0 from '\x00\x0a\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x0b\x00\x00\x00' @ 0 : 0; will stop at '\x00\x0a\x00\x00\x05' @ 448 : 1
-2026/01/17-22:44:41.757 3eec Compacting 1@0 + 1@1 files
-2026/01/17-22:44:41.760 3eec Generated table #29@0: 114 keys, 2359 bytes
-2026/01/17-22:44:41.760 3eec Compacted 1@0 + 1@1 files => 2359 bytes
-2026/01/17-22:44:41.763 3eec compacted to: files[ 0 1 1 0 0 0 0 ]
-2026/01/17-22:44:41.764 3eec Delete type=2 #28
-2026/01/17-22:44:41.765 3eec Manual compaction at level-0 from '\x00\x0a\x00\x00\x05' @ 448 : 1 .. '\x00\x0b\x00\x00\x00' @ 0 : 0; will stop at (end)
-2026/01/17-22:45:22.388 2960 Level-0 table #31: started
-2026/01/17-22:45:22.397 2960 Level-0 table #31: 1803 bytes OK
-2026/01/17-22:45:22.400 2960 Delete type=2 #25
-2026/01/17-22:45:22.400 2960 Delete type=0 #27
-2026/01/17-22:45:22.403 3eec Manual compaction at level-0 from '\x00\x0b\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x0c\x00\x00\x00' @ 0 : 0; will stop at '\x00\x0b\x00\x00\x05' @ 491 : 1
-2026/01/17-22:45:22.404 3eec Compacting 1@0 + 1@1 files
-2026/01/17-22:45:22.408 3eec Generated table #32@0: 115 keys, 2378 bytes
-2026/01/17-22:45:22.409 3eec Compacted 1@0 + 1@1 files => 2378 bytes
-2026/01/17-22:45:22.410 3eec compacted to: files[ 0 1 1 0 0 0 0 ]
-2026/01/17-22:45:22.411 3eec Delete type=2 #31
-2026/01/17-22:45:22.412 3eec Manual compaction at level-0 from '\x00\x0b\x00\x00\x05' @ 491 : 1 .. '\x00\x0c\x00\x00\x00' @ 0 : 0; will stop at (end)
-2026/01/17-22:46:23.475 3eec Manual compaction at level-0 from '\x00\x0c\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x0d\x00\x00\x00' @ 0 : 0; will stop at (end)
-2026/01/17-22:47:15.431 2960 Level-0 table #34: started
-2026/01/17-22:47:15.435 2960 Level-0 table #34: 3238 bytes OK
-2026/01/17-22:47:15.437 2960 Delete type=2 #29
-2026/01/17-22:47:15.437 2960 Delete type=0 #30
-2026/01/17-22:47:15.438 2028 Manual compaction at level-0 from '\x00\x0d\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x0e\x00\x00\x00' @ 0 : 0; will stop at '\x00\x0d\x00\x00\x05' @ 577 : 1
-2026/01/17-22:47:15.438 2028 Compacting 1@0 + 1@1 files
-2026/01/17-22:47:15.443 2028 Generated table #35@0: 119 keys, 2426 bytes
-2026/01/17-22:47:15.444 2028 Compacted 1@0 + 1@1 files => 2426 bytes
-2026/01/17-22:47:15.446 2028 compacted to: files[ 0 1 1 0 0 0 0 ]
-2026/01/17-22:47:15.447 2028 Delete type=2 #34
-2026/01/17-22:47:15.449 2028 Manual compaction at level-0 from '\x00\x0d\x00\x00\x05' @ 577 : 1 .. '\x00\x0e\x00\x00\x00' @ 0 : 0; will stop at (end)
-2026/01/17-22:48:08.922 17b0 Level-0 table #37: started
-2026/01/17-22:48:08.925 17b0 Level-0 table #37: 1905 bytes OK
-2026/01/17-22:48:08.927 17b0 Delete type=2 #32
-2026/01/17-22:48:08.928 17b0 Delete type=0 #33
-2026/01/17-22:48:08.930 3eec Manual compaction at level-0 from '\x00\x0e\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x0f\x00\x00\x00' @ 0 : 0; will stop at '\x00\x0e\x00\x00\x05' @ 620 : 1
-2026/01/17-22:48:08.930 3eec Compacting 1@0 + 1@1 files
-2026/01/17-22:48:08.933 3eec Generated table #38@0: 127 keys, 2481 bytes
-2026/01/17-22:48:08.934 3eec Compacted 1@0 + 1@1 files => 2481 bytes
-2026/01/17-22:48:08.936 3eec compacted to: files[ 0 1 1 0 0 0 0 ]
-2026/01/17-22:48:08.944 3eec Delete type=2 #37
-2026/01/17-22:48:08.946 3eec Manual compaction at level-0 from '\x00\x0e\x00\x00\x05' @ 620 : 1 .. '\x00\x0f\x00\x00\x00' @ 0 : 0; will stop at (end)
-2026/01/17-23:09:59.228 17b0 Level-0 table #40: started
-2026/01/17-23:09:59.231 17b0 Level-0 table #40: 1906 bytes OK
-2026/01/17-23:09:59.234 17b0 Delete type=2 #35
-2026/01/17-23:09:59.234 17b0 Delete type=0 #36
-2026/01/17-23:09:59.237 3eec Manual compaction at level-0 from '\x00\x0f\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x10\x00\x00\x00' @ 0 : 0; will stop at '\x00\x0f\x00\x00\x05' @ 663 : 1
-2026/01/17-23:09:59.237 3eec Compacting 1@0 + 1@1 files
-2026/01/17-23:09:59.240 3eec Generated table #41@0: 139 keys, 2594 bytes
-2026/01/17-23:09:59.240 3eec Compacted 1@0 + 1@1 files => 2594 bytes
-2026/01/17-23:09:59.242 3eec compacted to: files[ 0 1 1 0 0 0 0 ]
-2026/01/17-23:09:59.243 3eec Delete type=2 #40
-2026/01/17-23:09:59.244 3eec Manual compaction at level-0 from '\x00\x0f\x00\x00\x05' @ 663 : 1 .. '\x00\x10\x00\x00\x00' @ 0 : 0; will stop at (end)
-2026/01/17-23:11:27.500 2960 Level-0 table #43: started
-2026/01/17-23:11:27.504 2960 Level-0 table #43: 1803 bytes OK
-2026/01/17-23:11:27.510 2960 Delete type=2 #38
-2026/01/17-23:11:27.510 2960 Delete type=0 #39
-2026/01/17-23:11:27.511 3eec Manual compaction at level-0 from '\x00\x10\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x11\x00\x00\x00' @ 0 : 0; will stop at '\x00\x10\x00\x00\x05' @ 706 : 1
-2026/01/17-23:11:27.512 3eec Compacting 1@0 + 1@1 files
-2026/01/17-23:11:27.515 3eec Generated table #44@0: 151 keys, 2734 bytes
-2026/01/17-23:11:27.515 3eec Compacted 1@0 + 1@1 files => 2734 bytes
-2026/01/17-23:11:27.516 3eec compacted to: files[ 0 1 1 0 0 0 0 ]
-2026/01/17-23:11:27.517 3eec Delete type=2 #43
-2026/01/17-23:11:27.518 3eec Manual compaction at level-0 from '\x00\x10\x00\x00\x05' @ 706 : 1 .. '\x00\x11\x00\x00\x00' @ 0 : 0; will stop at (end)
+2026/01/20-21:00:05.544 1678 Reusing MANIFEST C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\IndexedDB\file__0.indexeddb.leveldb/MANIFEST-000001
+2026/01/20-21:00:05.547 1678 Recovering log #50
+2026/01/20-21:00:05.549 1678 Reusing old log C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\IndexedDB\file__0.indexeddb.leveldb/000050.log 
+2026/01/20-21:00:05.549 1678 Delete type=2 #48
+2026/01/20-21:00:05.630 6d0 Level-0 table #55: started
+2026/01/20-21:00:05.637 6d0 Level-0 table #55: 2967 bytes OK
+2026/01/20-21:00:05.645 6d0 Delete type=0 #50
+2026/01/20-21:00:05.652 d54 Manual compaction at level-0 from '\x00\x13\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x14\x00\x00\x00' @ 0 : 0; will stop at '\x00\x13\x00\x00\x05' @ 859 : 1
+2026/01/20-21:00:05.652 d54 Compacting 1@0 + 1@1 files
+2026/01/20-21:00:05.657 d54 Generated table #56@0: 159 keys, 3081 bytes
+2026/01/20-21:00:05.657 d54 Compacted 1@0 + 1@1 files => 3081 bytes
+2026/01/20-21:00:05.664 d54 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/01/20-21:00:05.666 d54 Delete type=2 #55
+2026/01/20-21:00:05.667 d54 Manual compaction at level-0 from '\x00\x13\x00\x00\x05' @ 859 : 1 .. '\x00\x14\x00\x00\x00' @ 0 : 0; will stop at (end)
