@@ -5,12 +5,6 @@ let isJsonFile = false;
 let previewContent = null;
 let fileInfo = null;
 
-let isAndroidApp;
-try {
-    isAndroidApp = typeof Android !== 'undefined';
-} catch (e) {
-}
-
 // Проверяем поддержку File System Access API
 const hasFileSystemAccess = 'showOpenFilePicker' in window;
 
@@ -392,19 +386,6 @@ class ScenarioManager {
                 fileInfo.textContent = window.translator.translate('backup_restored');
             }
 
-                        // Обновляем статус Discord, если есть name в JSON
-                        try {
-                            const jsonData = JSON.parse(text);
-                            if (jsonData.name) {
-                                console.log(jsonData.name);
-                                console.log("discordupd");
-                                updateDiscordStatus(jsonData.name);
-                            }
-                            console.log("loaded")
-                        } catch (e) {
-                            console.warn('Failed to parse JSON for Discord status:', e);
-                        }
-
             return true;
         } catch (e) {
             console.error('Error loading scenario:', e);
@@ -685,7 +666,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Функция для сохранения изменений
     async function saveChanges() {
-        isAndroidApp = typeof Android !== 'undefined';
+        const isAndroidApp = typeof Android !== 'undefined';
         
         if (isAndroidApp) {
             try {
@@ -880,6 +861,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         currentFile = file;
                         const text = await file.text();
                         handleFileContent(file.name, text);
+
+                        // Обновляем статус Discord, если есть name в JSON
+                        /*try {
+                            const jsonData = JSON.parse(text);
+                            if (jsonData.name) {
+                                console.log(jsonData.name);
+                                console.log("discordupd");
+                                updateDiscordStatus(jsonData.name);
+                            }
+                            console.log("loaded")
+                        } catch (e) {
+                            console.warn('Failed to parse JSON for Discord status:', e);
+                        }*/
                     }
                 };
                 
@@ -940,18 +934,6 @@ function handleFileContent(fileName, content) {
 
             // Заполняем форму
             fillFormFromJson(jsonData);
-
-                        // Обновляем статус Discord, если есть name в JSON
-                        try {
-                            if (jsonData.name) {
-                                console.log(jsonData.name);
-                                console.log("discordupd");
-                                updateDiscordStatus(`${jsonData.name} - ${jsonData.id}`);
-                            }
-                            console.log("loaded")
-                        } catch (e) {
-                            console.warn('Failed to parse JSON for Discord status:', e);
-                        }
 
         } catch (error) {
             console.error('Ошибка при парсинге JSON:', error);
@@ -1237,21 +1219,3 @@ if (isAndroidApp) {
         showError('Ошибка', 'Не удалось открыть файл на Android');
     }
 }
-
-function setPageZoom(zoomLevel) {
-  // Проверяем, что zoomLevel является числом и находится в разумных пределах
-  if (typeof zoomLevel !== 'number' || zoomLevel <= 0) {
-    console.error('Неверное значение масштаба. Используйте число больше 0.');
-    alert("блять");
-    return;
-  }
-
-  // Устанавливаем свойство zoom для элемента <body>
-  document.body.style.zoom = zoomLevel + '%';
-  console.log('Масштаб страницы установлен на: ' + zoomLevel + '%');
-  localStorage.pageZoom = parseFloat(zoomLevel); // Сохраняем значение в localStorage
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    setPageZoom(parseFloat(localStorage.pageZoom) || 100);
-});

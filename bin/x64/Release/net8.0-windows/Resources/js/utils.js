@@ -251,7 +251,7 @@ function convertObjectToReadableDOM(obj) {
         if (typeof item.action === "string" && item.action.includes("civilization")) {
             const id = item.action;
             actionEl.textContent =
-                window.eventManager.jsonData.lands[id]?.name || action;
+                window.eventManager?.jsonData?.lands?.[id]?.name || action;
             actionEl.addEventListener("click", () => window.countryManager.openCountry(id));
         }
 
@@ -274,7 +274,7 @@ function convertObjectToReadableDOM(obj) {
         if (typeof item.value === "string" && item.value.includes("civilization")) {
             const id = item.value;
             valueEl.textContent =
-                window.eventManager.jsonData.lands[id]?.name || value;
+                window.eventManager?.jsonData?.lands?.[id]?.name || value;
             valueEl.addEventListener("click", () => window.countryManager.openCountry(id));
         }
 

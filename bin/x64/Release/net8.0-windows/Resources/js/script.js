@@ -893,6 +893,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             fileList = ["1","2","3","4","5","6","7","8","9","","","","","","5","","","","","0","","","","","5","","","","","0","","","","","5","","","","","0"];
                         }
                         const modal = document.getElementById('openfiles_container');
+                        document.querySelector('.android_file_div')?.remove();
 
                         const contentDiv = document.createElement('div');
                         contentDiv.classList.add('android_file_div');

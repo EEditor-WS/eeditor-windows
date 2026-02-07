@@ -128,3 +128,4 @@ C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\Resources\pag
 C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\Resources\page\docs\docs.js
 C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\Resources\page\library.html
 C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\Resources\page\settings.html
+C:\Users\eenot\source\repos\EEditor\obj\x64\Release\net8.0-windows\EEditor.sourcelink.json

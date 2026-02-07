@@ -2,26 +2,14 @@
 const reqbonConfig = {
     // Конфигурация бонусов
     bonuses: {
-        // Бонусы с длительностью
-        defense: { hasDuration: true, defaultDuration: 3 },
-        attack: { hasDuration: true, defaultDuration: 3 },
-        population_income: { hasDuration: true, defaultDuration: 3 },
-        population_increase: { hasDuration: true, defaultDuration: 3 },
-        population_increase: { hasDuration: true, defaultDuration: 3 },
-        building_cost: { hasDuration: true, defaultDuration: 3 },
-        relation_ideology_change: { hasDuration: true },
-        relation_change: { hasDuration: true },
-        accelerated_recruit_cost: { hasDuration: true },
-        maintaining_army_cost_multiplier: { hasDuration: true },
-        population_increase: { hasDuration: true },
-        recruit_cost: { hasDuration: true },
-        add_culture_population: { hasDuration: true },
-        discontent: { hasDuration: true },
-
-        // Бонусы без длительности
+        accelerated_recruit_cost: {
+            subType: false,
+            hasDuration: true,
+            value: 'number'
+        },
         add_resource: { 
             hasDuration: false,
-            subtypes: [
+            subtype: [
                 'gold',
                 'iron',
                 'oil',
@@ -34,32 +22,202 @@ const reqbonConfig = {
                 'nuclear_weapon'
             ]
         },
-        resurrect_country: { hasDuration: false },
-        add_oil: { hasDuration: false },
-        add_cruiser: { hasDuration: false },
-        add_artillery: { hasDuration: false },
-        diplomacy_lift_sanctions: { hasDuration: false },
-        diplomacy_sanctions: { hasDuration: false },
-        diplomacy_pact: { hasDuration: false },
-        add_random_culture_population: { hasDuration: false },
-        diplomacy_alliance: { hasDuration: false },
-        diplomacy_peace: { hasDuration: false },
-        diplomacy_become_vassal: { hasDuration: false },
-        diplomacy_get_vassal: { hasDuration: false },
-        resource: { hasDuration: false },
-        add_shock_infantry: { hasDuration: false },
-        annex_country: { hasDuration: false },
-        add_tank: { hasDuration: false },
-        diplomacy_war: { hasDuration: false },
-        army_losses: { hasDuration: false },
-        prestige: { hasDuration: false },
-        add_battleship: { hasDuration: false },
-        add_infantry: { hasDuration: false },
-        science: { hasDuration: false },
-        money: { hasDuration: false },
-        change_country: { hasDuration: false },
-        change_political_institution: { hasDuration: false },
-        disable_external_diplomacy: { hasDuration: true },
+        add_artillery: {
+            subType: false,
+            hasDuration: false,
+            value: 'number'
+        },
+        add_battleship: {
+            subType: false,
+            hasDuration: false,
+            value: 'number'
+        },
+        add_cavalary: {
+            subType: false,
+            hasDuration: false,
+            value: 'number'
+        },
+        add_cruiser: {
+            subType: false,
+            hasDuration: false,
+            value: 'number'
+        },
+        add_culture_population: {
+            subType: 'country',
+            hasDuration: true,
+            value: 'number'
+        },
+        add_infantry: {
+            subType: false,
+            hasDuration: false,
+            value: 'number'
+        },
+        add_oil: {
+            subType: false,
+            hasDuration: false,
+            value: 'number',
+            hidden: true
+        },
+        add_random_culture_population: {
+            subType: false,
+            hasDuration: false,
+            value: 'number'
+        },
+        add_shock_infantry: {
+            subType: false,
+            hasDuration: false,
+            value: 'number'
+        },
+        add_submarine: {
+            subType: false,
+            hasDuration: false,
+            value: 'number'
+        },
+        add_tank: {
+            subType: false,
+            hasDuration: false,
+            value: 'number'
+        },
+        annex_country: {
+            subType: false,
+            hasDuration: false,
+            value: 'country'
+        },
+        army_losses: {
+            subType: false,
+            hasDuration: false,
+            value: 'number'
+        },
+        maintaining_army_cost_multiplier: {
+            subType: false,
+            hasDuration: true,
+            value: 'number'
+        },
+        attack: {
+            subType: false,
+            hasDuration: true,
+            value: 'number'
+        },
+        building_cost: {
+            subType: false,
+            hasDuration: true,
+            value: 'number'
+        },
+        change_country: {
+            subType: false,
+            hasDuration: false,
+            value: 'country'
+        },
+        change_political_institute: {
+            subType: false,
+            hasDuration: false,
+            value: 'ideology'
+        },
+        defense: {
+            subType: false,
+            hasDuration: true,
+            value: 'number'
+        },
+        diplomacy_war: {
+            subType: 'country',
+            hasDuration: false,
+            value: false
+        },
+        diplomacy_peace: {
+            subType: 'country',
+            hasDuration: false,
+            value: false
+        },
+        diplomacy_alliance: {
+            subType: 'country',
+            hasDuration: false,
+            value: false
+        },
+        diplomacy_pact: {
+            subType: 'country',
+            hasDuration: false,
+            value: false
+        },
+        diplomacy_sanctions: {
+            subType: 'country',
+            hasDuration: false,
+            value: false
+        },
+        diplomacy_lift_sanctions: {
+            subType: 'country',
+            hasDuration: false,
+            value: false
+        },
+        diplomacy_become_vassal: {
+            subType: 'country',
+            hasDuration: false,
+            value: false
+        },
+        diplomacy_break_alliance: {
+            subType: 'country',
+            hasDuration: false,
+            value: false
+        },
+        disable_external_diplomacy: {
+            subType: false,
+            hasDuration: true,
+            value: [1]
+        },
+        discontent: {
+            subType: false,
+            hasDuration: true,
+            value: 'number'
+        },
+        money: {
+            subType: false,
+            hasDuration: false,
+            value: 'number'
+        },
+        population_increase: {
+            subType: false,
+            hasDuration: true,
+            value: 'number'
+        },
+        population_income: {
+            subType: false,
+            hasDuration: true,
+            value: 'number'
+        },
+        prestige: {
+            subType: false,
+            hasDuration: false,
+            value: 'number'
+        },
+        recruit_cost: {
+            subType: false,
+            hasDuration: true,
+            value: 'number'
+        },
+        relation_change: {
+            subType: false,
+            hasDuration: true,
+            value: 'number'
+        },
+        relation_ideology_change: {
+            subType: 'ideology',
+            hasDuration: true,
+            value: 'number'
+        },
+        resurrect_country: {
+            subType: false,
+            hasDuration: false,
+            value: 'country'
+        },
+        science: {
+            subType: false,
+            hasDuration: false,
+            value: 'number'
+        },
+        transfer_provinces: {
+            subType: 'country',
+            hasDuration: false,
+            value: 'string'
+        },
     },
 
     // Конфигурация требований
@@ -67,172 +225,172 @@ const reqbonConfig = {
         building_exists: {
             subType: false,
             value: 'building',
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         controls_capital: {
             subType: 'country',
             value: 'country',
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         cooldown: {
             subType: 'event',
             value: 'number',
-            actions: ['more', 'less']
+            action: ['more', 'less']
         },
         count_of_tasks: {
             subType: false,
             value: 'number',
-            actions: ['more', "equal", 'less']
+            action: ['more', "equal", 'less']
         },
         discontent: {
             subType: false,
             value: 'number',
-            actions: ['more', 'less']
+            action: ['more', 'less']
         },
         enemy_near_capital: {
             subType: false,
             value: 'boolean',
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         event_choice: {
             subType: 'event',
-            value: 'number',
-            actions: 'country'
+            value: [1,2,3],
+            action: 'country'
         },
         group_name: {
             subType: false,
-            value: 'text',
-            actions: ['equal', 'not_equal']
+            value: 'string',
+            action: ['equal', 'not_equal']
         },
         has_alliance: {
             subType: 'country',
             value: 'country',
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         has_pact: {
             subType: 'country',
             value: 'country',
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         has_provinces: {
             subType: ['all', 'any'],
-            value: 'text',
-            actions: ['equal', 'not_equal']
+            value: 'string',
+            action: ['equal', 'not_equal']
         },
         has_sanctions: {
             subType: 'country',
             value: 'country',
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         has_vassal: {
             subType: 'country',
             value: 'country',
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         has_war: {
             subType: 'country',
             value: 'country',
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         independent_land: {
             subType: false,
             value: [true],
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         is_defeated: {
             subType: false,
             value: 'country',
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         is_neighbor: {
             subType: false,
             value: 'country',
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         is_player: {
             subType: false,
             value: [true],
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         land_id: {
             subType: false,
             value: 'country',
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         land_name: {
             subType: false,
-            value: 'text',
-            actions: ['equal', 'not_equal']
+            value: 'string',
+            action: ['equal', 'not_equal']
         },
         land_power: {
             subType: false,
             value: 'number',
-            actions: ['more', 'less']
+            action: ['more', 'less']
         },
         lost_capital: {
             subType: false,
             value: [true],
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         money: {
             subType: false,
             value: 'number',
-            actions: ['more', 'less']
+            action: ['more', 'less']
         },
         month: {
             subType: false,
             value: 'month',
-            actions: ['more', 'equal', 'less']
+            action: ['more', 'equal', 'less']
         },
         near_water: {
             subType: false,
             value: [true],
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         no_enemy: {
             subType: false,
             value: [true],
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         num_of_provinces: {
             subType: false,
             value: 'number',
-            actions: ['more', 'equal', 'less']
+            action: ['more', 'equal', 'less']
         },
         num_of_vassals: {
             subType: false,
             value: 'number',
-            actions: ['more', 'equal', 'less']
+            action: ['more', 'equal', 'less']
         },
         political_institution: {
             subType: false,
             value: 'ideology',
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         random_value: {
             subType: false,
             value: 'zerosto',
-            actions: ['less']
+            action: ['less']
         },
         received_event: {
             subType: 'country',
             value: 'event',
-            actions: ['equal', 'not_equal']
+            action: ['equal', 'not_equal']
         },
         tax: {
             subType: false,
             value: 'number',
-            actions: ['more', 'less']
+            action: ['more', 'less']
         },
         turn: {
             subType: false,
             value: 'number',
-            actions: ['more', 'equal', 'less']
+            action: ['more', 'equal', 'less']
         },
         year: {
             subType: false,
             value: 'number',
-            actions: ['more', 'equal', 'less']
+            action: ['more', 'equal', 'less']
         }
     }
 };
@@ -323,7 +481,7 @@ function createCountrySelect(selectedValue = '') {
 
 // Обновляем функцию создания поля значения
 function updateValueField(type, currentValue = '') {
-    const valueContainer = document.getElementById('requirement-value-container');
+    const valueContainer = document.getElementById('requirement-value');
     if (!valueContainer) return;
     
     valueContainer.innerHTML = '';
@@ -339,337 +497,186 @@ function updateValueField(type, currentValue = '') {
     // Остальная логика для других типов...
 }
 
-window.raccoon = {
-    money: {
-        title :  "Money",
-        description :  "Amount of money in treasury",
-        type :  "number",
-        actions :  ["more", "less"]
-    },
-    political_institution :  {
-        title :  "Political Institution",
-        description :  "Specific political institution is opened",
-        type :  "string",
-        actions :  ["equal", "not_equal"]
-    },
-    count_of_tasks :  {
-        title :  "Number of Tasks",
-        description :  "Number of active tasks in top right corner",
-        type :  "number",
-        actions :  ["more", "equal", "less"]
-    },
-    enemy_near_capital :  {
-        title :  "Enemy Near Capital",
-        description :  "Enemy forces are near the capital",
-        type :  "boolean",
-        actions :  ["equal", "not_equal"]
-    },
-    lost_capital :  {
-        title :  "Lost Capital",
-        description :  "The capital has been lost in battle",
-        type :  "boolean",
-        actions :  ["equal", "not_equal"]
-    },
-    discontent :  {
-        title :  "Discontent",
-        description :  "Level of population discontent",
-        type :  "number",
-        actions :  ["more", "less"]
-    },
-    tax :  {
-        title :  "Tax Rate",
-        description :  "The current tax rate",
-        type :  "number",
-        actions :  ["more", "less"]
-    },
-    land_name :  {
-        title :  "Country Name",
-        description :  "Specific land by its name (will not work if country changed it's name or will be reformed)",
-        type :  "string",
-        actions :  ["equal", "not_equal"]
-    },
-    land_id :  {
-        title :  "Country",
-        description :  "Specific country, regardless of how its name changes during the game",
-        type :  "string",
-        actions :  ["equal", "not_equal"]
-    },
-    group_name :  {
-        title :  "Country Group",
-        description :  "Group of countries for event targeting",
-        type :  "string",
-        actions :  ["equal", "not_equal"]
-    },
-    random_value :  {
-        title :  "Random Value",
-        description :  "Compare with a random value between 0 and 1 (useful for chances: less 0.2 :  20% chance)",
-        type :  "number",
-        actions :  ["less"]
-    },
-    no_enemy :  {
-        title :  "No Enemy",
-        description :  "There are no enemy country that can reach player's territory",
-        type :  "boolean",
-        actions :  ["equal", "not_equal"]
-    },
-    building_exists :  {
-        title :  "Building Exists",
-        description :  "Specific building is placed on one of the player's provinces",
-        type :  "string",
-        actions :  ["equal", "not_equal"]
-    },
-    num_of_provinces :  {
-        title :  "Number of Provinces",
-        description :  "Total number of controlled provinces",
-        type :  "number",
-        actions :  ["equal", "more", "less"]
-    },
-    near_water :  {
-        title :  "Near Water",
-        description :  "There is water province near the territory",
-        type :  "boolean",
-        actions :  ["equal", "not_equal"]
-    },
-    independent_land :  {
-        title :  "Independent Land",
-        description :  "The land is not a vassal",
-        type :  "boolean",
-        actions :  ["equal", "not_equal"]
-    },
-    land_power :  {
-        title :  "Land Power",
-        description :  "Military power of a land",
-        type :  "number",
-        actions :  ["more", "less"]
-    },
-    turn :  {
-        title :  "Turn",
-        description :  "Current game turn number",
-        type :  "number",
-        actions :  ["more", "equal", "less"]
-    },
-    year :  {
-        title :  "Year",
-        description :  "Current game year",
-        type :  "number",
-        actions :  ["more", "equal", "less"]
-    },
-    month :  {
-        title :  "Month",
-        description :  "Current game month",
-        type :  "number",
-        actions :  ["more", "equal", "less"]
-    },
-    cooldown :  {
-        title :  "No more than once every",
-        description :  "Check time passed since last event occurrence (if event didn't happen, more will always be true, less will always be false)",
-        type :  "number",
-        actions :  ["more", "less"]
-    },
-    received_event :  {
-        title :  "Received Event",
-        description :  "Check if country received specific event before (or any country received it)",
-        type :  "string",
-        actions :  ["equal", "not_equal"],
-        subtypes :  `function(gdt)
-            local countries :  {"any", "this"}
-            local country_names :  {"Any", "This country"}
-            
-            for key, value in pairs(gdt.lands) do
-                if key ~= "undeveloped_land" then
-                    table.insert(countries, key)
-                    table.insert(country_names, value.name)
-                end
-            end
-            
-            return countries, country_names
-        end`
-    },
-    event_choice :  {
-        title :  "Event Choice",
-        description :  "Check which choice was selected in a specific event by a country",
-        type :  "string",
-        subtypes :  `function(gdt)
-            local events :  {}
-            local event_names :  {}
-            
-            for id, event in pairs(gdt.custom_events) do
-                table.insert(events, id)
-                table.insert(event_names, event.title)
-            end
-            
-            return events, event_names
-        end`
-    },
-    has_war :  {
-        title :  "Has War",
-        description :  "Check if two countries are at war or if country has any wars",
-        type :  "string",
-        actions :  ["equal", "not_equal"],
-        subtypes :  `function(gdt)
-            local countries :  {"any", "this"}
-            local country_names :  {"Any", "This country"}
-            
-            for key, value in pairs(gdt.lands) do
-                if key ~= "undeveloped_land" then
-                    table.insert(countries, key)
-                    table.insert(country_names, value.name)
-                end
-            end
-            
-            return countries, country_names
-        end`
-    },
-    has_sanctions :  {
-        title :  "Has Sanctions",
-        description :  "Check if sanctions are imposed between countries or if country has any sanctions",
-        type :  "string",
-        actions :  ["equal", "not_equal"],
-        subtypes :  `function(gdt)
-            local countries :  {"any", "this"}
-            local country_names :  {"Any", "This country"}
-            
-            for key, value in pairs(gdt.lands) do
-                if key ~= "undeveloped_land" then
-                    table.insert(countries, key)
-                    table.insert(country_names, value.name)
-                end
-            end
-            
-            return countries, country_names
-        end`
-    },
-    has_pact :  {
-        title :  "Has Pact",
-        description :  "Check if two countries have a pact or if country has any pacts",
-        type :  "string",
-        actions :  ["equal", "not_equal"],
-        subtypes :  `function(gdt)
-            local countries :  {"any", "this"}
-            local country_names :  {"Any", "This country"}
-            
-            for key, value in pairs(gdt.lands) do
-                if key ~= "undeveloped_land" then
-                    table.insert(countries, key)
-                    table.insert(country_names, value.name)
-                end
-            end
-            
-            return countries, country_names
-        end`
-    },
-    has_alliance :  {
-        title :  "Has Alliance",
-        description :  "Check if two countries have an alliance or if country has any alliances",
-        type :  "string",
-        actions :  ["equal", "not_equal"],
-        subtypes :  `function(gdt)
-            local countries :  {"any", "this"}
-            local country_names :  {"Any", "This country"}
-            
-            for key, value in pairs(gdt.lands) do
-                if key ~= "undeveloped_land" then
-                    table.insert(countries, key)
-                    table.insert(country_names, value.name)
-                end
-            end
-            
-            return countries, country_names
-        end`
-    },
-    is_defeated :  {
-        title :  "Is Defeated",
-        description :  "Check if a country has been defeated",
-        type :  "string",
-        actions :  ["equal", "not_equal"],
-        subtypes :  `function(gdt)
-            local countries :  {"any", "this"}
-            local country_names :  {"Any", "This country"}
-            
-            for key, value in pairs(gdt.lands) do
-                if key ~= "undeveloped_land" then
-                    table.insert(countries, key)
-                    table.insert(country_names, value.name)
-                end
-            end
-            
-            return countries, country_names
-        end`
-    },
-    controls_capital :  {
-        title :  "Controls Capital",
-        description :  "Check if a country controls another country's capital",
-        type :  "string",
-        actions :  ["equal", "not_equal"],
-        subtypes :  `function(gdt)
-            local countries :  {"any", "this"}
-            local country_names :  {"Any", "This country"}
-            
-            for key, value in pairs(gdt.lands) do
-                if key ~= "undeveloped_land" then
-                    table.insert(countries, key)
-                    table.insert(country_names, value.name)
-                end
-            end
-            
-            return countries, country_names
-        end`
-    },
-    is_player :  {
-        title :  "Is Player",
-        description :  "Check if a country is controlled by a player",
-        type :  "boolean",
-        actions :  ["equal", "not_equal"]
-    },
-    has_vassal :  {
-        title :  "Has Vassal",
-        description :  "Check if a country has a specific vassal or any vassal",
-        type :  "string",
-        actions :  ["equal", "not_equal"],
-        subtypes :  `function(gdt)
-            local countries :  {"any", "this"}
-            local country_names :  {"Any", "This country"}
-            
-            for key, value in pairs(gdt.lands) do
-                if key ~= "undeveloped_land" then
-                    table.insert(countries, key)
-                    table.insert(country_names, value.name)
-                end
-            end
-            
-            return countries, country_names
-        end`
-    },
-    is_neighbor :  {
-        title :  "Is Neighbor",
-        description :  "Check if a country borders another country",
-        type :  "string",
-        actions :  ["equal", "not_equal"]
-    },
-    num_of_vassals :  {
-        title :  "Number of Vassals",
-        description :  "Total number of vassals under this country",
-        type :  "number",
-        actions :  ["equal", "more", "less"]
-    },
-    has_provinces :  {
-        title :  "Has Provinces",
-        description :  "Check if country controls specific provinces",
-        type :  "provinces",
-        actions :  ["equal", "not_equal"],
-        subtypes :  `function(gdt)
-            return {"all", "any"}, {"All provinces", "Any province"}
-        end`
-    },
+
+
+// number, false, event, ideology, string
+
+// Функция для создания кнопок выбора action
+const createActionButtons = (selectedAction = '', availableActions = ['equal', 'not_equal', 'more', 'less']) => {
+    const container = document.createElement('div');
+    container.className = 'action-buttons-group';
+    container.id = 'requirement-action';
+    
+    const allActions = [
+        { value: 'equal', icon: '=', title: 'Equal' },
+        { value: 'not_equal', icon: '≠', title: 'Not Equal' },
+        { value: 'more', icon: '>', title: 'Greater' },
+        { value: 'less', icon: '<', title: 'Less' }
+    ];
+    
+    // Фильтруем только доступные actions
+    const filteredActions = allActions.filter(a => availableActions.includes(a.value));
+    
+    filteredActions.forEach(action => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'action-button';
+        btn.dataset.value = action.value;
+        btn.textContent = action.icon;
+        btn.title = action.title;
+        
+        if (selectedAction === action.value) {
+            btn.classList.add('active');
+        }
+        
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            container.querySelectorAll('.action-button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+        
+        container.appendChild(btn);
+    });
+    
+    // Добавляем скрытый input для хранения значения
+    const hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.className = 'action-value';
+    hiddenInput.value = selectedAction;
+    container.appendChild(hiddenInput);
+    
+    return container;
 };
 
-// 1. Получаем массив записей [ключ, значение]
-const entries = Object.entries(window.raccoon);
+const returnPlace = (type, isBonus, place) => {
+    const whereReqBon = isBonus ? 'bonuses' : 'requirements';
+    const rb = window.reqbonConfig[whereReqBon];
 
-// 2. Сортируем массив по алфавиту, обращаясь к полю title
-entries.sort((a, b) => a[0].localeCompare(b[0]));
+    if (rb?.[type]?.[place]) {
+        console.log(`returnPlace called: type=${type}, place=${place}, value=${rb[type][place]}`);
+        
+        if (rb[type][place] == false) {
+            // Нет подтипа, возвращаем пустой элемент
+            return false;
+        } else if (place === 'action' && rb[type][place] instanceof Array && 
+                   rb[type][place].every(v => ['equal', 'not_equal', 'more', 'less'].includes(v))) {
+            // Создаем кнопки для action только если это массив символов сравнения
+            console.log('Creating action buttons for:', rb[type][place]);
+            return createActionButtons('', rb[type][place]);
+        } else if (rb[type][place] == 'string') {
+            // Создаем текстовое поле
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.id = `requirement-${place}`;
+            input.className = 'main-page-input';
+            console.log('returning from reqbon: ', input);
+            return input;
+        } else if (rb[type][place] == 'number') {
+            // Создаем числовое поле
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.id = `requirement-${place}`;
+            input.className = 'main-page-input';
+            console.log('returning from reqbon: ', input);
+            return input;
+        } else if (rb[type][place] == 'country') {
+            // Создаем выпадающий список для стран
+            let lands = Object.entries(window.countryManager?.jsonData?.lands || {});
+            lands = lands.filter(([id, country]) => id !== 'undeveloped_land');
+            const countrySelect = document.createElement('select');
+            countrySelect.id = `requirement-${place}`;
+            countrySelect.className = 'main-page-input';    
+            // Получаем и сортируем список стран по имени
+            const countries = lands.map(([id, country]) => ({
+                id,
+                name: country.name || id
+            }))
+            .sort((a, b) => a.name.toUpperCase().localeCompare(b.name.toUpperCase()));
 
-// 3. Создаем новый объект из отсортированного массива
-window.raccoon = Object.fromEntries(entries);
+            // Создаем базовые опции для обоих селектов
+            const baseOptions = `
+                <option value="any">${window.translator.translate('any')}</option>
+                <option value="this">${window.translator.translate('this')}</option>
+                ${countries.map(country => 
+                    `<option value="${country.id}">${country.name || country.id}</option>`
+                ).join('')}
+            `;
 
-console.log(window.raccoon);
+            countrySelect.innerHTML = baseOptions;
+
+            console.log('returning from reqbon: ', countrySelect);
+            return countrySelect;
+        } else if (rb[type][place] == 'event') {
+            // Создаем выпадающий список для событий
+            const eventSelect = document.createElement('select');
+            eventSelect.id = `requirement-${place}`;
+            eventSelect.className = 'main-page-input';
+            const events = Object.entries(window.eventManager?.jsonData?.custom_events || {});
+            eventSelect.innerHTML = events.map(([id, event]) => 
+                `<option value="${id}">${event.title || id}</option>`
+            ).join('');
+            console.log('returning from reqbon: ', eventSelect);
+            return eventSelect;
+        } else if (rb[type][place] instanceof Array) {
+            // Создаем выпадающий список из массива
+            const select = document.createElement('select');
+            select.id = `requirement-${place}`;
+            select.className = 'main-page-input';
+            select.innerHTML = rb[type][place].map(option => 
+                `<option value="${option}">${option}</option>`
+            ).join('');
+            console.log('returning from reqbon: ', select);
+            return select;
+        } else if (rb[type][place] == 'boolean') {
+            const div = document.createElement('div');
+            div.id = `requirement-${place}`;
+            div.className = 'main-page-input';
+            div.innerHTML = `
+                <input type="radio" name="req-subtype" value="true" id="req-subtype-true">
+                <label for="req-subtype-true">${window.translator.translate('yes')}</label>
+                <input type="radio" name="req-subtype" value="false" id="req-subtype-false">
+                <label for="req-subtype-false">${window.translator.translate('no')}</label>
+            `;
+            console.log('returning from reqbon: ', div);
+            return div;
+        } else if (rb[type][place] == 'ideology') {
+            const ideologySelect = document.createElement('select');
+            ideologySelect.id = 'country-political';
+            ideologySelect.name = 'political';
+            ideologySelect.className = 'main-page-input';
+            ideologySelect.innerHTML = `
+                <option value="Democracy" data-translate="democracy">🗳️ Демократия</option>
+                <option value="Communism" data-translate="communism">🚩 Коммунизм</option>
+                <option value="Monarchy" data-translate="monarchy">👑 Монархия</option>
+                <option value="Theocracy" data-translate="theocracy">✝️ Теократия</option>
+                <option value="Fascism" data-translate="fascism">⚔️ Фашизм</option>
+                <option value="Trade Republic" data-translate="trade_republic">💰 Торговая Республика</option>
+            `;
+            console.log('returning from reqbon: ', ideologySelect);
+            return ideologySelect;
+        } else if (rb[type][place] == 'month') {
+            const monthSelect = document.createElement('select');
+            monthSelect.id = `requirement-${place}`;
+            monthSelect.className = 'main-page-input';
+            monthSelect.innerHTML = `
+                <option value="1">${window.translator.translate('january')}</option>
+                <option value="2">${window.translator.translate('february')}</option>
+                <option value="3">${window.translator.translate('march')}</option>
+                <option value="4">${window.translator.translate('april')}</option>
+                <option value="5">${window.translator.translate('may')}</option>
+                <option value="6">${window.translator.translate('june')}</option>
+                <option value="7">${window.translator.translate('july')}</option>
+                <option value="8">${window.translator.translate('august')}</option>
+                <option value="9">${window.translator.translate('september')}</option>
+                <option value="10">${window.translator.translate('october')}</option>
+                <option value="11">${window.translator.translate('november')}</option>
+                <option value="12">${window.translator.translate('december')}</option>
+            `;
+            console.log('returning from reqbon: ', monthSelect);
+            return monthSelect;
+        } else {
+            console.warn(`Unknown subtype for ${type} in ${place}`);
+            return false;
+        }
+    }
+}

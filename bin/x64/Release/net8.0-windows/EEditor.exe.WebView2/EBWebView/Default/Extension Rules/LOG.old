@@ -1,3 +1,2 @@
-2026/01/19-20:17:08.643 102c Reusing MANIFEST C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\Extension Rules/MANIFEST-000001
-2026/01/19-20:17:08.644 102c Recovering log #3
-2026/01/19-20:17:08.645 102c Reusing old log C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\Extension Rules/000003.log 
+2026/01/29-20:09:29.740 5940 Creating DB C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\Extension Rules since it was missing.
+2026/01/29-20:09:29.762 5940 Reusing MANIFEST C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\Extension Rules/MANIFEST-000001

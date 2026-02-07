@@ -59,8 +59,7 @@
               "ToolTip": "C:\\Users\\eenot\\source\\repos\\EEditor\\App.xaml",
               "RelativeToolTip": "App.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-02-19T21:09:36.474Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-19T21:09:36.474Z"
             },
             {
               "$type": "Document",
@@ -72,8 +71,7 @@
               "RelativeToolTip": "App.xaml.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-25T14:38:44.651Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-25T14:38:44.651Z"
             },
             {
               "$type": "Document",
@@ -83,7 +81,7 @@
               "RelativeDocumentMoniker": "MainWindow.xaml.cs",
               "ToolTip": "C:\\Users\\eenot\\source\\repos\\EEditor\\MainWindow.xaml.cs",
               "RelativeToolTip": "MainWindow.xaml.cs",
-              "ViewState": "AgIAAMYAAAAAAAAAAAD4v88AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAKkAAAAAAAAAAAAtwM8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-19T16:37:54.412Z",
               "EditorCaption": ""
@@ -108,8 +106,7 @@
               "ToolTip": "C:\\Users\\eenot\\source\\repos\\EEditor\\MainWindow.xaml",
               "RelativeToolTip": "MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-02-19T16:38:05.318Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-19T16:38:05.318Z"
             }
           ]
         }

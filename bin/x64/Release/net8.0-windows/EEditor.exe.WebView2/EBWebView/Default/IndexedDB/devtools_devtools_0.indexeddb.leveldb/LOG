@@ -1,3 +1,2 @@
-2026/01/20-21:00:20.950 d54 Reusing MANIFEST C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\IndexedDB\devtools_devtools_0.indexeddb.leveldb/MANIFEST-000001
-2026/01/20-21:00:20.951 d54 Recovering log #15
-2026/01/20-21:00:20.952 d54 Reusing old log C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\IndexedDB\devtools_devtools_0.indexeddb.leveldb/000015.log 
+2026/01/30-22:43:48.621 9bc Creating DB C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\IndexedDB\devtools_devtools_0.indexeddb.leveldb since it was missing.
+2026/01/30-22:43:48.629 9bc Reusing MANIFEST C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\IndexedDB\devtools_devtools_0.indexeddb.leveldb/MANIFEST-000001

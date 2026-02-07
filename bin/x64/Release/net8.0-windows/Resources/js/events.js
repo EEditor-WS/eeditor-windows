@@ -158,12 +158,6 @@ class EventManager {
                 ...event
             }));
 
-            
-        const eventsCountEl = document.getElementById('eventsCount');
-        if (eventsCountEl) {
-            eventsCountEl.textContent = events.length;
-        } 
-
         // Применяем фильтры
         if (this.filters.groups) {
             events = events.filter(event => {
@@ -1119,47 +1113,23 @@ generateUniqueId(minimumID = 0) {
                 // -------------------------------------------
 
                 let tSType;
-                if (typeof item.subtype === "string") {
-                    // если value = E + цифры (любое количество)
-                    if (/^E\d+$/.test(item.subtype)) {
-                        tSType = `${item.subtype} - ${window.eventManager.jsonData?.custom_events?.[item.subtype]?.title}` ?? item.subtype;
-                    } else if (item.subtype.includes("civilization")) {
-                        tSType = window.eventManager.jsonData.lands[item.subtype]?.name ?? item.subtype;
-                    } else {
-                        tSType = item.subtype;
-                    }
+                if (typeof item.subtype === "string" && item.subtype.includes("civilization")) {
+                    tSType = window.eventManager.jsonData.lands[item.subtype]?.name ?? item.subtype;
                 } else {
-                    // если число/булево и т.п.
                     tSType = item.subtype ?? "";
                 }
 
                 let tAction;
-                if (typeof item.action === "string") {
-                    // если value = E + цифры (любое количество)
-                    if (/^E\d+$/.test(item.action)) {
-                        tAction = `${item.action} - ${window.eventManager.jsonData?.custom_events?.[item.action]?.title}` ?? item.action;
-                    } else if (item.action.includes("civilization")) {
-                        tAction = window.eventManager.jsonData.lands[item.action]?.name ?? item.action;
-                    } else {
-                        tAction = item.action;
-                    }
+                if (typeof item.action === "string" && item.action.includes("civilization")) {
+                    tAction = window.eventManager.jsonData.lands[item.action]?.name ?? item.action;
                 } else {
-                    // если число/булево и т.п.
-                    tAction = item.action ?? "";
+                    tAction = window.translator.translate(item.action) ?? "";
                 }
 
                 let tValue;
-                if (typeof displayValue === "string") {
-                    // если value = E + цифры (любое количество)
-                    if (/^E\d+$/.test(displayValue)) {
-                        tValue = `${displayValue} - ${window.eventManager.jsonData?.custom_events?.[displayValue]?.title}` ?? displayValue;
-                    } else if (displayValue.includes("civilization")) {
-                        tValue = window.eventManager.jsonData.lands[displayValue]?.name ?? displayValue;
-                    } else {
-                        tValue = displayValue;
-                    }
+                if (typeof displayValue === "string" && displayValue.includes("civilization")) {
+                    tValue = window.eventManager.jsonData.lands[displayValue]?.name ?? displayValue;
                 } else {
-                    // если число/булево и т.п.
                     tValue = displayValue ?? "";
                 }
 

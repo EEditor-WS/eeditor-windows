@@ -1892,3 +1892,47 @@
     padding: 20px;
     padding-top: 0;
 }
+
+/* Стили для кнопок action в редакторе требований/бонусов */
+.action-buttons-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 2px solid var(--border-color, #ccc);
+    border-radius: 4px;
+    background-color: var(--bg-sec, #f5f5f5);
+    color: var(--text-primary, #333);
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-button:hover {
+    border-color: var(--accent-color, #007bff);
+    background-color: var(--accent-light, #e7f1ff);
+}
+
+.action-button.active {
+    background-color: var(--accent-color, #007bff);
+    color: white;
+    border-color: var(--accent-color, #007bff);
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+}
+
+.action-button:active {
+    transform: scale(0.95);
+}
+
+.action-value {
+    display: none;
+}

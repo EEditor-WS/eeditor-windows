@@ -13,9 +13,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--link rel="icon" type="image/x-icon" href="img/ico/ico.svg"-->
     <link rel="icon" type="image/x-icon" href="img/ico/ico.svg">
-    <script src="eelibs/import.js" type="module"></script>
+    <script src="eelibs/js/fetch.js"></script>
+    <script src="eelibs/js/notification.js"></script>
     <script src="eelibs/js/pages.js"></script>
-    <script src="eelibs/js/dropdown.js"></script>
+    <script src="eelibs/js/translator.js"></script>
+    <script src="eelibs/js/websocket.js"></script>
     <script src="lands_data.js"></script>
     <script src="js/base.js"></script>
     <script src="js/dropdown.js"></script>
@@ -52,11 +54,6 @@
     <!--link rel="stylesheet" href="css/!.css">
     <link rel="stylesheet" href="css/elib/dropdown.css"-->
     <link rel="stylesheet" href="eelibs/import.css">
-    <link rel="stylesheet" href="eelibs/css/!.css">
-    <link rel="stylesheet" href="eelibs/css/checkbox.css">
-    <link rel="stylesheet" href="eelibs/css/compibality.css">
-    <link rel="stylesheet" href="eelibs/css/dropdown.css">
-    <link rel="stylesheet" href="eelibs/css/notification.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/countries.css">
     <link rel="stylesheet" href="css/events.css">
@@ -72,11 +69,6 @@
     <link rel="stylesheet" href="css/input.css">
     <link rel="stylesheet" href="css/mobile/mobile-main.css">
     <link rel="stylesheet" href="css/mobile/mobile-desktop.css">
-	<style>
-	div#langDropdown img {
-		width: 35px;
-	}
-	</style>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-9HFX1FVLMV"></script>
     <script>
@@ -1278,17 +1270,15 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="requirement-subtype" data-translate="subtype"></label>
-                                    <input type="text" id="requirement-subtype" class="main-page-input" autocomplete="off" title="Подтип требования" placeholder="Подтип">
+                                    <div id="requirement-subtype" class="main-page-input" ></div>
                                 </div>
                                 <div class="form-group">
                                     <label for="requirement-action" data-translate="action"></label>
-                                    <select id="requirement-action" class="main-page-input" title="Действие требования">
-                                        <option value="" data-translate="select_action">Выберите действие</option>
-                                    </select>
+                                    <div id="requirement-action" class="main-page-input" title="Действие требования"></div>
                                 </div>
                                 <div class="form-group">
                                     <label for="requirement-value" data-translate="value"></label>
-                                    <div id="requirement-value-container"></div>
+                                    <div id="requirement-value"></div>
                                 </div>
                                 <div class="info-actions">
                                     <button type="button" id="save-requirement" class="icon-action-button save">
@@ -1443,83 +1433,6 @@
                     <button id="add-selected-country" class="action-button">
                         <img src="img/ui/add.svg">
                         <span data-translate="add">Добавить</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Модальное окно для редактора требований и бонусов -->
-        <div id="requirements-editor-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 id="remodal-requirements-editor-title" data-translate="requirements_editor">Requirements Editor</h3>
-                    <button class="close-modal">×</button>
-                </div>
-                <div class="modal-body">
-                    <div id="remodal-requirements-list" class="requirements-list">
-                        <table class="list-table">
-                            <thead>
-                                <tr>
-                                    <th data-translate="type">Type</th>
-                                    <th data-translate="subtype">Subtype</th>
-                                    <th data-translate="action">Action</th>
-                                    <th data-translate="value">Value</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody id="remodal-requirements-items">
-                            </tbody>
-                        </table>
-                    </div>
-                    <div id="remodal-requirement-editor" class="requirement-editor hidden">
-                        <div class="form-group">
-                            <label for="remodal-requirement-type" data-translate="type">Type</label>
-                            <select id="remodal-requirement-type" class="main-page-input" title="Тип требования">
-                                <option value="" data-translate="select_type">select_type</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="remodal-requirement-duration" data-translate="duration">Duration (turns)</label>
-                            <input type="text" id="remodal-requirement-duration" class="main-page-input" autocomplete="off" title="Длительность требования" placeholder="Длительность">
-                        </div>
-                        <div class="form-group">
-                            <label for="remodal-requirement-subtype" data-translate="subtype">Subtype</label>
-                            <input type="text" id="remodal-requirement-subtype" class="main-page-input" autocomplete="off" title="Подтип требования" placeholder="Подтип">
-                        </div>
-                        <div class="form-group">
-                            <label for="remodal-requirement-action" data-translate="action">Action</label>
-                            <select id="remodal-requirement-action" class="main-page-input" title="Действие требования">
-                                <option value="" data-translate="select_action">select_action</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="remodal-requirement-value" data-translate="value">Value</label>
-                            <div id="remodal-requirement-value-container"></div>
-                        </div>
-                        <div class="info-actions">
-                            <button type="button" id="remodal-save-requirement" class="icon-action-button save">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1-2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                                    <polyline points="7 3 7 8 15 8"></polyline>
-                                </svg>
-                                <span class="button-text" data-translate="save">Save</span>
-                            </button>
-                            <button type="button" id="remodal-cancel-requirement" class="icon-action-button delete">
-                                <svg viewBox="0 0 24 24">
-                                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                                </svg>
-                                <span class="button-text" data-translate="cancel">Cancel</span>
-                            </button>
-                        </div>
-                    </div>
-                    <button type="button" id="remodal-add-requirement" class="icon-action-button add">
-                        <svg viewBox="0 0 24 24">
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                        </svg>
-                        <span class="button-text" data-translate="add">Add</span>
                     </button>
                 </div>
             </div>
