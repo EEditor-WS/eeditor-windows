@@ -1,3 +1,21 @@
-2026/06/09-19:48:23.995 580 Reusing MANIFEST C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\Local Storage\leveldb/MANIFEST-000001
-2026/06/09-19:48:24.021 580 Recovering log #30
-2026/06/09-19:48:24.028 580 Reusing old log C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\Local Storage\leveldb/000030.log 
+2026/06/26-13:11:24.124 674c Reusing MANIFEST C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\Local Storage\leveldb/MANIFEST-000001
+2026/06/26-13:11:24.169 674c Recovering log #89
+2026/06/26-13:11:24.179 674c Reusing old log C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\Local Storage\leveldb/000089.log 
+2026/06/26-13:13:24.410 6098 Level-0 table #92: started
+2026/06/26-13:13:24.443 6098 Level-0 table #92: 625791 bytes OK
+2026/06/26-13:13:24.493 6098 Delete type=0 #89
+2026/06/26-13:21:07.048 6098 Level-0 table #94: started
+2026/06/26-13:21:07.073 6098 Level-0 table #94: 624882 bytes OK
+2026/06/26-13:21:07.077 6098 Delete type=0 #91
+2026/06/26-13:21:07.079 6098 Compacting 4@0 + 1@1 files
+2026/06/26-13:21:07.119 6098 Generated table #95@0: 36 keys, 630291 bytes
+2026/06/26-13:21:07.120 6098 Compacted 4@0 + 1@1 files => 630291 bytes
+2026/06/26-13:21:07.121 6098 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/06/26-13:21:07.123 6098 Delete type=2 #84
+2026/06/26-13:21:07.123 6098 Delete type=2 #86
+2026/06/26-13:21:07.124 6098 Delete type=2 #88
+2026/06/26-13:21:07.124 6098 Delete type=2 #92
+2026/06/26-13:21:07.124 6098 Delete type=2 #94
+2026/06/26-13:24:39.113 674c Level-0 table #97: started
+2026/06/26-13:24:39.284 674c Level-0 table #97: 625159 bytes OK
+2026/06/26-13:24:39.288 674c Delete type=0 #93
