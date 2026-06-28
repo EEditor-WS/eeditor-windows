@@ -1,19 +1,12 @@
-2026/06/27-23:33:40.426 1208 Reusing MANIFEST C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\Local Storage\leveldb/MANIFEST-000001
-2026/06/27-23:33:40.430 1208 Recovering log #121
-2026/06/27-23:33:40.465 1208 Level-0 table #124: started
-2026/06/27-23:33:40.554 1208 Level-0 table #124: 625687 bytes OK
-2026/06/27-23:33:40.558 1208 Recovering log #123
-2026/06/27-23:33:40.567 1208 Reusing old log C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\Local Storage\leveldb/000123.log 
-2026/06/27-23:33:40.574 1208 Delete type=0 #121
-2026/06/28-13:02:35.323 1208 Level-0 table #126: started
-2026/06/28-13:02:35.380 1208 Level-0 table #126: 625696 bytes OK
-2026/06/28-13:02:35.384 1208 Delete type=0 #123
-2026/06/28-13:02:35.387 6828 Compacting 4@0 + 1@1 files
-2026/06/28-13:02:35.429 6828 Generated table #127@0: 36 keys, 631062 bytes
-2026/06/28-13:02:35.429 6828 Compacted 4@0 + 1@1 files => 631062 bytes
-2026/06/28-13:02:35.431 6828 compacted to: files[ 0 1 1 0 0 0 0 ]
-2026/06/28-13:02:35.435 6828 Delete type=2 #117
-2026/06/28-13:02:35.435 6828 Delete type=2 #120
-2026/06/28-13:02:35.435 6828 Delete type=2 #122
-2026/06/28-13:02:35.435 6828 Delete type=2 #124
-2026/06/28-13:02:35.435 6828 Delete type=2 #126
+2026/06/28-14:37:22.523 75d4 Reusing MANIFEST C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\Local Storage\leveldb/MANIFEST-000001
+2026/06/28-14:37:22.543 75d4 Recovering log #138
+2026/06/28-14:37:22.553 75d4 Reusing old log C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\Local Storage\leveldb/000138.log 
+2026/06/28-14:37:22.556 75d4 Delete type=2 #127
+2026/06/28-14:37:22.556 75d4 Delete type=2 #129
+2026/06/28-14:37:22.556 75d4 Delete type=2 #132
+2026/06/28-14:37:22.556 75d4 Delete type=2 #134
+2026/06/28-14:37:22.556 75d4 Delete type=2 #137
+2026/06/28-14:37:22.556 75d4 Delete type=2 #139
+2026/06/28-15:06:52.437 75d4 Level-0 table #143: started
+2026/06/28-15:06:52.487 75d4 Level-0 table #143: 625992 bytes OK
+2026/06/28-15:06:52.492 75d4 Delete type=0 #138

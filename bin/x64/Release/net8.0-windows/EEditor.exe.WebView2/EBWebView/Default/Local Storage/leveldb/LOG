@@ -1,7 +1,10 @@
-2026/06/28-13:12:11.165 5024 Reusing MANIFEST C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\Local Storage\leveldb/MANIFEST-000001
-2026/06/28-13:12:11.168 5024 Recovering log #125
-2026/06/28-13:12:11.184 5024 Level-0 table #129: started
-2026/06/28-13:12:11.282 5024 Level-0 table #129: 625730 bytes OK
-2026/06/28-13:12:11.295 5024 Recovering log #128
-2026/06/28-13:12:11.309 5024 Reusing old log C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\Local Storage\leveldb/000128.log 
-2026/06/28-13:12:11.314 5024 Delete type=0 #125
+2026/06/28-15:35:04.766 2040 Reusing MANIFEST C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\Local Storage\leveldb/MANIFEST-000001
+2026/06/28-15:35:04.770 2040 Recovering log #142
+2026/06/28-15:35:04.798 2040 Level-0 table #145: started
+2026/06/28-15:35:04.855 2040 Level-0 table #145: 625918 bytes OK
+2026/06/28-15:35:04.859 2040 Recovering log #144
+2026/06/28-15:35:04.868 2040 Reusing old log C:\Users\eenot\source\repos\EEditor\bin\x64\Release\net8.0-windows\EEditor.exe.WebView2\EBWebView\Default\Local Storage\leveldb/000144.log 
+2026/06/28-15:35:04.873 2040 Delete type=0 #142
+2026/06/28-15:36:04.933 2040 Level-0 table #147: started
+2026/06/28-15:36:05.031 2040 Level-0 table #147: 625982 bytes OK
+2026/06/28-15:36:05.067 2040 Delete type=0 #144

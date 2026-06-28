@@ -12,13 +12,13 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace EEditor
 {
     public class ConfigData
     {
         public string ServerUrl { get; set; } = "";
-        // 1. Добавляем поле для хранения пути к игре в конфиге
         public string GameFolderPath { get; set; } = "";
     }
 
@@ -61,13 +61,45 @@ namespace EEditor
     {
         private string selectedFolderPath;
         private static readonly HttpClient httpClient = new HttpClient();
-        // 2. Добавляем ссылку на главное окно, чтобы обновлять и сохранять конфиг
         private readonly MainWindow mainWindow;
+
+        // === ВСПОМОГАТЕЛЬНЫЕ КЛАССЫ (вынесены на уровень класса, так как в C# нельзя объявлять классы внутри методов) ===
+        private class JsonFileData
+        {
+            public string RelativePath;
+            public string NameWithoutExt;
+            public string MapHash;
+            public string ScenarioName;
+            public int? ScenarioYear;
+            public string ScenarioDesc;
+        }
+
+        private class MapInfo
+        {
+            public Dictionary<string, string> Versions { get; set; } = new Dictionary<string, string>();
+            public List<ScenarioInfo> Scenarios { get; set; } = new List<ScenarioInfo>();
+        }
+
+        private class ScenarioInfo
+        {
+            public string File { get; set; }
+            public string Name { get; set; }
+            public int? Year { get; set; }
+            public string Description { get; set; }
+            public string MapVersion { get; set; }
+        }
+
+        private class MapPrefixInfo
+        {
+            public string CleanName;
+            public string MapName;
+            public string VersionId;
+        }
+        // =================================================================================
 
         public FileSystemBridge(MainWindow window)
         {
             mainWindow = window;
-            // Инициализируем путь из уже загруженного конфига
             selectedFolderPath = mainWindow.Config?.GameFolderPath;
         }
 
@@ -129,7 +161,6 @@ namespace EEditor
 #endif
             });
 
-            // 3. Если папка успешно выбрана, сохраняем её в конфигурацию
             if (!string.IsNullOrEmpty(result) && mainWindow.Config != null)
             {
                 mainWindow.Config.GameFolderPath = result;
@@ -247,6 +278,16 @@ namespace EEditor
 
         public async Task<string> GetGroupedMapsAsync(string libLink)
         {
+            const string MapHashProp = "map_hash";
+            const string DisplayNameProp = "display_name";
+            const string NameProp = "name";
+            const string YearProp = "year";
+            const string EditorProp = "editor";
+            const string DescriptionProp = "description";
+            const string DirtySuffix = "_!";
+            const string VersionPrefix = "_v";
+            const string OtherCategory = "other";
+
             if (string.IsNullOrEmpty(selectedFolderPath) || !Directory.Exists(selectedFolderPath))
             {
                 await SelectFolderAsync();
@@ -262,10 +303,13 @@ namespace EEditor
                     string json = await File.ReadAllTextAsync(mapsDataPath);
                     mapsData = JsonSerializer.Deserialize<Dictionary<string, JsonNode>>(json) ?? new Dictionary<string, JsonNode>();
                 }
-                catch { mapsData = new Dictionary<string, JsonNode>(); }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[GetGroupedMapsAsync] Error loading local cache: {ex.Message}");
+                    mapsData = new Dictionary<string, JsonNode>();
+                }
             }
 
-            // Находим все .map и .json файлы с относительными путями
             var mapFiles = Directory.EnumerateFiles(selectedFolderPath, "*.map", SearchOption.AllDirectories)
                 .Select(f => new {
                     FullName = f,
@@ -285,41 +329,88 @@ namespace EEditor
                 .ToList();
 
             string mapsJsonUrl = libLink.TrimEnd('/') + "/maps.json";
-            string remoteMapsJson = null;
+            JsonDocument remoteDoc = null;
             bool mapsDataChanged = false;
+            bool remoteFetchAttempted = false;
 
-            var jsonFilesData = new List<(string RelativePath, string NameWithoutExt, string MapHash)>();
+            var jsonFilesData = new List<JsonFileData>();
 
             foreach (var jsonFile in jsonFiles)
             {
                 string mapHash = null;
+                string scenarioName = null;
+                int? scenarioYear = null;
+                string scenarioDesc = null;
+
                 try
                 {
-                    string content = await File.ReadAllTextAsync(jsonFile.FullName);
-                    using (JsonDocument doc = JsonDocument.Parse(content))
+                    string fileContent = await File.ReadAllTextAsync(jsonFile.FullName);
+                    using (var doc = JsonDocument.Parse(fileContent))
                     {
-                        if (doc.RootElement.TryGetProperty("map_hash", out var hashProp))
+                        var root = doc.RootElement;
+
+                        // Читаем map_hash, поддерживая и строку, и число
+                        if (root.TryGetProperty(MapHashProp, out var hashProp))
                         {
-                            mapHash = hashProp.ToString();
+                            if (hashProp.ValueKind == JsonValueKind.String)
+                                mapHash = hashProp.GetString();
+                            else if (hashProp.ValueKind == JsonValueKind.Number)
+                                mapHash = hashProp.GetRawText(); // Число -> строка
+                        }
+
+                        if (root.TryGetProperty(NameProp, out var nameProp) && nameProp.ValueKind == JsonValueKind.String)
+                            scenarioName = nameProp.GetString();
+                        if (root.TryGetProperty(YearProp, out var yearProp) && yearProp.ValueKind == JsonValueKind.Number)
+                            scenarioYear = yearProp.GetInt32();
+                        if (root.TryGetProperty(EditorProp, out var editorProp) && editorProp.ValueKind == JsonValueKind.Object)
+                        {
+                            if (editorProp.TryGetProperty(DescriptionProp, out var descProp) && descProp.ValueKind == JsonValueKind.String)
+                                scenarioDesc = descProp.GetString();
                         }
                     }
-                }
-                catch { }
 
-                jsonFilesData.Add((jsonFile.RelativePath, jsonFile.NameWithoutExt, mapHash));
+                    // Логируем найденный хеш
+                    if (!string.IsNullOrEmpty(mapHash))
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[GetGroupedMapsAsync] Found map_hash '{mapHash}' in {jsonFile.NameWithoutExt}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[GetGroupedMapsAsync] Error parsing {jsonFile.FullName}: {ex.Message}");
+                }
+
+                jsonFilesData.Add(new JsonFileData
+                {
+                    RelativePath = jsonFile.RelativePath,
+                    NameWithoutExt = jsonFile.NameWithoutExt,
+                    MapHash = mapHash,
+                    ScenarioName = scenarioName,
+                    ScenarioYear = scenarioYear,
+                    ScenarioDesc = scenarioDesc
+                });
 
                 if (!string.IsNullOrEmpty(mapHash) && !mapsData.ContainsKey(mapHash))
                 {
-                    if (remoteMapsJson == null)
+                    if (remoteDoc == null && !remoteFetchAttempted)
                     {
-                        try { remoteMapsJson = await httpClient.GetStringAsync(mapsJsonUrl); }
-                        catch { remoteMapsJson = "[]"; }
+                        remoteFetchAttempted = true;
+                        try
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[GetGroupedMapsAsync] Fetching remote maps from: {mapsJsonUrl}");
+                            string remoteJson = await httpClient.GetStringAsync(mapsJsonUrl);
+                            System.Diagnostics.Debug.WriteLine($"[GetGroupedMapsAsync] Remote maps fetched successfully. Length: {remoteJson.Length}");
+                            remoteDoc = JsonDocument.Parse(remoteJson);
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[GetGroupedMapsAsync] Error fetching remote maps: {ex.Message}");
+                        }
                     }
 
-                    using (JsonDocument remoteDoc = JsonDocument.Parse(remoteMapsJson))
+                    if (remoteDoc != null)
                     {
                         JsonElement? foundData = null;
-
                         if (remoteDoc.RootElement.ValueKind == JsonValueKind.Array)
                         {
                             foreach (var item in remoteDoc.RootElement.EnumerateArray())
@@ -346,8 +437,14 @@ namespace EEditor
                             mapsDataChanged = true;
                         }
                     }
+                    else if (remoteFetchAttempted)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[GetGroupedMapsAsync] Warning: map_hash '{mapHash}' found in scenario, but remote maps could not be loaded.");
+                    }
                 }
             }
+
+            remoteDoc?.Dispose();
 
             if (mapsDataChanged)
             {
@@ -356,140 +453,281 @@ namespace EEditor
                     string updatedJson = JsonSerializer.Serialize(mapsData, new JsonSerializerOptions { WriteIndented = true });
                     await File.WriteAllTextAsync(mapsDataPath, updatedJson);
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[GetGroupedMapsAsync] Error saving local cache: {ex.Message}");
+                }
             }
             else if (!File.Exists(mapsDataPath))
             {
-                try { File.WriteAllText(mapsDataPath, "{}"); } catch { }
+                try { File.WriteAllText(mapsDataPath, "{}"); }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[GetGroupedMapsAsync] Error creating empty cache: {ex.Message}");
+                }
             }
-
-            // ========== НОВАЯ ГРУППИРОВКА ПО ИМЕНИ КАРТЫ ==========
 
             var priorityMapNames = new List<string> { "parkourcat_euro4", "zachary_world", "jalhund_europe", "eenot_asia" };
+            var mapInfos = new Dictionary<string, MapInfo>(StringComparer.OrdinalIgnoreCase);
 
-            // Словарь для группировки: ключ – имя карты, значение – список jsonKey
-            var result = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
-
-            // Функция получения имени карты из mapsData по хешу
-            string GetMapNameFromHash(string hash)
+            foreach (var mapFile in mapFiles)
             {
-                if (string.IsNullOrEmpty(hash) || !mapsData.TryGetValue(hash, out var node))
-                    return null;
+                string fileName = mapFile.NameWithoutExt;
+                string name = fileName.Replace(DirtySuffix, "");
+                string version = "default";
 
-                // Проверяем поля display_name, name
-                if (node is JsonObject obj)
+                int lastVIndex = name.LastIndexOf(VersionPrefix, StringComparison.OrdinalIgnoreCase);
+                if (lastVIndex != -1)
                 {
-                    if (obj.TryGetPropertyValue("display_name", out var disp) && disp != null && disp.GetValueKind() == JsonValueKind.String)
-                        return disp.ToString();
-                    if (obj.TryGetPropertyValue("name", out var name) && name != null && name.GetValueKind() == JsonValueKind.String)
-                        return name.ToString();
-                }
+                    string beforeV = name.Substring(0, lastVIndex);
+                    string afterV = name.Substring(lastVIndex + VersionPrefix.Length);
+                    int endIndex = afterV.IndexOf('_');
+                    if (endIndex == -1) endIndex = afterV.Length;
+                    string versionPart = afterV.Substring(0, endIndex);
 
-                // Иначе используем первое возможное имя
-                var possible = GetPossibleBaseNamesFromMapData(node);
-                return possible.FirstOrDefault();
-            }
-
-            // Список для .json, которые не удалось сопоставить ни с одной картой
-            var unmatchedJsonKeys = new List<string>();
-
-            foreach (var jsonData in jsonFilesData)
-            {
-                string jsonRelativePath = jsonData.RelativePath;
-                string jsonName = jsonData.NameWithoutExt;
-                string mapHash = jsonData.MapHash;
-                string jsonKey = Path.ChangeExtension(jsonRelativePath, null);
-
-                string mapKey = null; // итоговый ключ группировки
-
-                // 1. Пытаемся получить имя карты по хешу
-                if (!string.IsNullOrEmpty(mapHash))
-                {
-                    var nameFromHash = GetMapNameFromHash(mapHash);
-                    if (!string.IsNullOrEmpty(nameFromHash))
+                    if (!string.IsNullOrEmpty(versionPart))
                     {
-                        mapKey = nameFromHash;
+                        version = "v" + versionPart;
+                        name = beforeV;
                     }
                 }
 
-                // 2. Если не удалось, пытаемся сопоставить с .map по имени (как раньше)
-                if (string.IsNullOrEmpty(mapKey))
+                string mapName = name;
+                string versionId = string.IsNullOrEmpty(version) ? fileName.Replace(DirtySuffix, "") : version;
+
+                if (!mapInfos.ContainsKey(mapName))
+                    mapInfos[mapName] = new MapInfo();
+                if (!mapInfos[mapName].Versions.ContainsKey(versionId))
+                    mapInfos[mapName].Versions[versionId] = mapFile.RelativePath;
+            }
+
+            var mapPrefixLookup = new List<MapPrefixInfo>();
+            foreach (var kvp in mapInfos)
+            {
+                foreach (var verKvp in kvp.Value.Versions)
                 {
-                    int underscoreCount = jsonName.Count(c => c == '_');
-                    bool useNameSearch = underscoreCount >= 3;
+                    string clean = Path.GetFileNameWithoutExtension(verKvp.Value).Replace(DirtySuffix, "");
+                    mapPrefixLookup.Add(new MapPrefixInfo { CleanName = clean, MapName = kvp.Key, VersionId = verKvp.Key });
+                }
+            }
 
-                    if (useNameSearch)
+            // Добавляем сами имена карт (без версий), чтобы префиксный поиск работал даже при отсутствии .map файлов
+            foreach (var kvp in mapInfos)
+            {
+                if (!mapPrefixLookup.Any(p => p.CleanName.Equals(kvp.Key, StringComparison.OrdinalIgnoreCase)))
+                {
+                    mapPrefixLookup.Add(new MapPrefixInfo { CleanName = kvp.Key, MapName = kvp.Key, VersionId = null });
+                }
+            }
+            mapPrefixLookup = mapPrefixLookup.OrderByDescending(x => x.CleanName.Length).ToList();
+
+            var unmatchedJsonKeys = new List<string>();
+
+            Func<string, string> GetMapNameFromHash = (hash) =>
+            {
+                if (string.IsNullOrEmpty(hash) || !mapsData.TryGetValue(hash, out var node)) return null;
+
+                if (node is JsonObject obj)
+                {
+                    if (obj.TryGetPropertyValue(DisplayNameProp, out var disp) && disp != null && disp.GetValueKind() == JsonValueKind.String) return disp.ToString();
+                    if (obj.TryGetPropertyValue(NameProp, out var name) && name != null && name.GetValueKind() == JsonValueKind.String) return name.ToString();
+                }
+                var possible = GetPossibleBaseNamesFromMapData(node);
+                return possible.FirstOrDefault();
+            };
+
+            foreach (var jsonData in jsonFilesData)
+            {
+                string jsonPath = jsonData.RelativePath;
+                string jsonName = jsonData.NameWithoutExt;
+                string mapHash = jsonData.MapHash;
+                string jsonKey = Path.ChangeExtension(jsonPath, null);
+
+                string mapName = null;
+                string versionId = null;
+
+                // 2.1 Поиск по хешу
+                if (!string.IsNullOrEmpty(mapHash))
+                {
+                    if (mapsData.TryGetValue(mapHash, out var mapNode) && mapNode is JsonObject mapObj)
                     {
-                        var matchedMap = mapFiles.FirstOrDefault(m =>
-                            jsonName.StartsWith(m.NameWithoutExt + "_", StringComparison.OrdinalIgnoreCase) ||
-                            jsonName.StartsWith(m.NameWithoutExt.Replace("_!", "") + "_", StringComparison.OrdinalIgnoreCase));
+                        string foundMapName = null;
+                        string foundVersionId = null;
 
-                        if (matchedMap != null)
+                        if (mapObj.TryGetPropertyValue("id", out var idNode) && idNode != null)
                         {
-                            mapKey = Path.ChangeExtension(matchedMap.RelativePath, null);
+                            if (idNode is JsonArray idArray)
+                            {
+                                var idParts = new List<string>();
+                                foreach (var part in idArray)
+                                {
+                                    if (part != null && part.GetValueKind() == JsonValueKind.String)
+                                    {
+                                        idParts.Add(part.ToString());
+                                    }
+                                }
+                                foundMapName = string.Join("_", idParts);
+                            }
+                            else if (idNode.GetValueKind() == JsonValueKind.String)
+                            {
+                                foundMapName = idNode.ToString();
+                            }
+                        }
+
+                        if (mapObj.TryGetPropertyValue("versions", out var versionsNode) && versionsNode is JsonArray versionsArray)
+                        {
+                            foreach (var verNode in versionsArray)
+                            {
+                                if (verNode is JsonArray verArray && verArray.Count >= 2)
+                                {
+                                    var verId = verArray[0]?.ToString();
+
+                                    // Нормализуем хеш версии к строке
+                                    string verHash = null;
+                                    if (verArray[1] != null)
+                                    {
+                                        verHash = verArray[1].GetValueKind() == JsonValueKind.String
+                                            ? verArray[1].ToString()
+                                            : verArray[1].ToJsonString().Trim('"'); // Для чисел
+                                    }
+
+                                    if (verHash == mapHash && !string.IsNullOrEmpty(verId))
+                                    {
+                                        foundVersionId = verId;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(foundMapName))
+                        {
+                            mapName = foundMapName;
+                            versionId = string.IsNullOrEmpty(foundVersionId) ? mapHash : foundVersionId;
+
+                            if (!mapInfos.ContainsKey(mapName))
+                            {
+                                mapInfos[mapName] = new MapInfo();
+                            }
+
+                            if (!mapInfos[mapName].Versions.ContainsKey(versionId))
+                            {
+                                mapInfos[mapName].Versions[versionId] = "";
+                            }
                         }
                     }
                 }
 
-                // 3. Если всё ещё нет, но есть хеш и данные в mapsData – пробуем найти .map по возможным именам
-                if (string.IsNullOrEmpty(mapKey) && !string.IsNullOrEmpty(mapHash) && mapsData.ContainsKey(mapHash))
+                // 2.2 Префиксный поиск с извлечением версии из имени сценария
+                if (string.IsNullOrEmpty(mapName))
+                {
+                    int underscoreCount = jsonName.Count(c => c == '_');
+                    if (underscoreCount >= 3)
+                    {
+                        foreach (var prefix in mapPrefixLookup)
+                        {
+                            if (jsonName.StartsWith(prefix.CleanName + "_", StringComparison.OrdinalIgnoreCase) ||
+                                jsonName.Equals(prefix.CleanName, StringComparison.OrdinalIgnoreCase))
+                            {
+                                mapName = prefix.MapName;
+                                versionId = prefix.VersionId;
+
+                                // Если версия не определена (нет .map файла), попробуем извлечь из имени сценария
+                                if (string.IsNullOrEmpty(versionId))
+                                {
+                                    int vIndex = jsonName.IndexOf("_v", StringComparison.OrdinalIgnoreCase);
+                                    if (vIndex != -1)
+                                    {
+                                        string afterV = jsonName.Substring(vIndex + 2);
+                                        int endIndex = afterV.IndexOf('_');
+                                        if (endIndex == -1) endIndex = afterV.Length;
+                                        string versionPart = afterV.Substring(0, endIndex);
+                                        if (!string.IsNullOrEmpty(versionPart))
+                                        {
+                                            versionId = "v" + versionPart;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // 2.3 Fallback по возможным именам из кэша
+                if (string.IsNullOrEmpty(mapName) && !string.IsNullOrEmpty(mapHash) && mapsData.ContainsKey(mapHash))
                 {
                     var possibleNames = GetPossibleBaseNamesFromMapData(mapsData[mapHash]);
                     foreach (var baseName in possibleNames)
                     {
-                        var mapByHash = mapFiles.FirstOrDefault(m =>
-                            string.Equals(m.NameWithoutExt, baseName, StringComparison.OrdinalIgnoreCase) ||
-                            string.Equals(m.NameWithoutExt, baseName + "_!", StringComparison.OrdinalIgnoreCase));
-
-                        if (mapByHash != null)
+                        if (mapInfos.ContainsKey(baseName))
                         {
-                            mapKey = Path.ChangeExtension(mapByHash.RelativePath, null);
+                            mapName = baseName;
+                            versionId = mapInfos[mapName].Versions.FirstOrDefault().Key;
                             break;
                         }
                     }
                 }
 
-                // 4. Если имя не определено, помечаем как unmatched
-                if (string.IsNullOrEmpty(mapKey))
+                // 2.4 Поиск по приоритетным именам
+                if (string.IsNullOrEmpty(mapName))
+                {
+                    foreach (var priorityName in priorityMapNames)
+                    {
+                        if (jsonName.StartsWith(priorityName + "_", StringComparison.OrdinalIgnoreCase) ||
+                            jsonName.Equals(priorityName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            mapName = priorityName;
+                            if (mapInfos.ContainsKey(mapName))
+                            {
+                                versionId = mapInfos[mapName].Versions.FirstOrDefault().Key;
+                            }
+                            else
+                            {
+                                mapInfos[mapName] = new MapInfo();
+                                versionId = "default";
+                                mapInfos[mapName].Versions[versionId] = "";
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                if (string.IsNullOrEmpty(mapName))
                 {
                     unmatchedJsonKeys.Add(jsonKey);
                     continue;
                 }
 
-                // 5. Проверка на принадлежность к приоритетным (по началу имени)
-                bool isPriority = false;
-                foreach (var priorityName in priorityMapNames)
+                var scenario = new ScenarioInfo
                 {
-                    if (string.Equals(mapKey, priorityName, StringComparison.OrdinalIgnoreCase) ||
-                        mapKey.StartsWith(priorityName + "_", StringComparison.OrdinalIgnoreCase))
-                    {
-                        mapKey = priorityName;
-                        isPriority = true;
-                        break;
-                    }
-                }
+                    File = jsonKey,
+                    MapVersion = versionId,
+                    Name = jsonData.ScenarioName,
+                    Year = jsonData.ScenarioYear,
+                    Description = jsonData.ScenarioDesc
+                };
 
-                // Добавляем в результат
-                if (!result.ContainsKey(mapKey))
-                    result[mapKey] = new List<string>();
-                result[mapKey].Add(jsonKey);
+                if (!mapInfos.ContainsKey(mapName)) mapInfos[mapName] = new MapInfo();
+                if (!mapInfos[mapName].Versions.ContainsKey(versionId)) mapInfos[mapName].Versions[versionId] = "";
+                mapInfos[mapName].Scenarios.Add(scenario);
             }
 
-            // Обработка несопоставленных .json
+            var otherScenarios = new List<ScenarioInfo>();
             foreach (var jsonKey in unmatchedJsonKeys)
             {
-                string fileName = Path.GetFileNameWithoutExtension(jsonKey);
                 bool assigned = false;
-
-                // Проверяем, не относится ли к приоритетной карте (по префиксу)
+                string fileName = Path.GetFileNameWithoutExtension(jsonKey);
                 foreach (var priorityName in priorityMapNames)
                 {
-                    if (string.Equals(fileName, priorityName, StringComparison.OrdinalIgnoreCase) ||
-                        fileName.StartsWith(priorityName + "_", StringComparison.OrdinalIgnoreCase))
+                    if (fileName.StartsWith(priorityName + "_", StringComparison.OrdinalIgnoreCase) ||
+                        fileName.Equals(priorityName, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (!result.ContainsKey(priorityName))
-                            result[priorityName] = new List<string>();
-                        result[priorityName].Add(jsonKey);
+                        if (!mapInfos.ContainsKey(priorityName)) mapInfos[priorityName] = new MapInfo();
+                        string vId = mapInfos[priorityName].Versions.Count == 0 ? "default" : mapInfos[priorityName].Versions.First().Key;
+                        if (!mapInfos[priorityName].Versions.ContainsKey(vId)) mapInfos[priorityName].Versions[vId] = "";
+
+                        mapInfos[priorityName].Scenarios.Add(new ScenarioInfo { File = jsonKey, MapVersion = vId });
                         assigned = true;
                         break;
                     }
@@ -497,95 +735,110 @@ namespace EEditor
 
                 if (!assigned)
                 {
-                    if (!result.ContainsKey("other"))
-                        result["other"] = new List<string>();
-                    result["other"].Add(jsonKey);
+                    otherScenarios.Add(new ScenarioInfo { File = jsonKey });
                 }
             }
 
-            // Добавляем приоритетные ключи, если их ещё нет (для случая, когда нет .json, но они должны присутствовать)
-            foreach (var name in priorityMapNames)
-            {
-                if (!result.ContainsKey(name))
-                    result[name] = new List<string>();
-            }
+            var keysToRemove = mapInfos.Where(kvp => kvp.Value.Versions.Count == 0).Select(kvp => kvp.Key).ToList();
+            foreach (var key in keysToRemove) mapInfos.Remove(key);
 
-            // Удаляем пустые ключи
-            var filteredResult = result
-                .Where(kvp => kvp.Value.Count > 0)
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            var orderedResult = new Dictionary<string, object>();
 
-            // Сортируем значения внутри каждого ключа
-            foreach (var key in filteredResult.Keys.ToList())
-            {
-                filteredResult[key] = filteredResult[key].OrderBy(x => x, StringComparer.OrdinalIgnoreCase).ToList();
-            }
-
-            // Формируем итоговый упорядоченный словарь
-            var orderedResult = new Dictionary<string, List<string>>();
-
-            // 1. Приоритетные (в заданном порядке)
             foreach (var priorityName in priorityMapNames)
             {
-                if (filteredResult.ContainsKey(priorityName))
+                if (mapInfos.ContainsKey(priorityName))
                 {
-                    orderedResult[priorityName] = filteredResult[priorityName];
-                    filteredResult.Remove(priorityName);
+                    orderedResult[priorityName] = new
+                    {
+                        versions = mapInfos[priorityName].Versions.Select(kvp => new[] { kvp.Key, kvp.Value }).ToList(),
+                        scenarios = mapInfos[priorityName].Scenarios
+                            .OrderBy(s => s.File, StringComparer.OrdinalIgnoreCase)
+                            .Select(s => new { file = s.File, name = s.Name, year = s.Year, description = s.Description, mapversion = s.MapVersion }).ToList()
+                    };
+                    mapInfos.Remove(priorityName);
                 }
             }
 
-            // 2. Корневые (без разделителей), кроме "other"
-            var rootKeys = filteredResult.Keys
-                .Where(k => !k.Contains(Path.DirectorySeparatorChar) && !k.Equals("other", StringComparison.OrdinalIgnoreCase))
+            var rootKeys = mapInfos.Keys
+                .Where(k => !k.Contains('/') && !k.Contains('\\'))
                 .OrderBy(k => k, StringComparer.OrdinalIgnoreCase)
                 .ToList();
 
             foreach (var key in rootKeys)
             {
-                orderedResult[key] = filteredResult[key];
-                filteredResult.Remove(key);
+                orderedResult[key] = new
+                {
+                    versions = mapInfos[key].Versions.Select(kvp => new[] { kvp.Key, kvp.Value }).ToList(),
+                    scenarios = mapInfos[key].Scenarios
+                        .OrderBy(s => s.File, StringComparer.OrdinalIgnoreCase)
+                        .Select(s => new { file = s.File, name = s.Name, year = s.Year, description = s.Description, mapversion = s.MapVersion }).ToList()
+                };
+                mapInfos.Remove(key);
             }
 
-            // 3. "other"
-            if (filteredResult.ContainsKey("other"))
+            if (otherScenarios.Count > 0)
             {
-                orderedResult["other"] = filteredResult["other"];
-                filteredResult.Remove("other");
+                orderedResult[OtherCategory] = new
+                {
+                    versions = new List<string[]>(),
+                    scenarios = otherScenarios
+                        .OrderBy(s => s.File, StringComparer.OrdinalIgnoreCase)
+                        .Select(s => new { file = s.File, name = (string)null, year = (int?)null, description = (string)null, mapversion = (string)null }).ToList()
+                };
             }
 
-            // 4. Вложенные (с разделителем)
-            var nestedKeys = filteredResult.Keys
-                .Where(k => k.Contains(Path.DirectorySeparatorChar))
+            var nestedKeys = mapInfos.Keys
+                .Where(k => k.Contains('/') || k.Contains('\\'))
                 .OrderBy(k => k, StringComparer.OrdinalIgnoreCase)
                 .ToList();
 
             foreach (var key in nestedKeys)
             {
-                orderedResult[key] = filteredResult[key];
+                orderedResult[key] = new
+                {
+                    versions = mapInfos[key].Versions.Select(kvp => new[] { kvp.Key, kvp.Value }).ToList(),
+                    scenarios = mapInfos[key].Scenarios
+                        .OrderBy(s => s.File, StringComparer.OrdinalIgnoreCase)
+                        .Select(s => new { file = s.File, name = s.Name, year = s.Year, description = s.Description, mapversion = s.MapVersion }).ToList()
+                };
             }
 
-            return JsonSerializer.Serialize(orderedResult);
+            return JsonSerializer.Serialize(orderedResult, new JsonSerializerOptions { WriteIndented = true });
         }
 
         private bool IsHashMatch(JsonElement item, string targetHash)
         {
-            if (item.TryGetProperty("hash", out var h) && h.ToString() == targetHash) return true;
-            if (item.TryGetProperty("map_hash", out var mh) && mh.ToString() == targetHash) return true;
+            if (string.IsNullOrEmpty(targetHash)) return false;
 
+            // Проверяем поле "hash"
+            if (item.TryGetProperty("hash", out var h))
+            {
+                string hashStr = h.ValueKind == JsonValueKind.String ? h.GetString() : h.GetRawText();
+                if (hashStr == targetHash) return true;
+            }
+
+            // Проверяем поле "map_hash"
+            if (item.TryGetProperty("map_hash", out var mh))
+            {
+                string mhStr = mh.ValueKind == JsonValueKind.String ? mh.GetString() : mh.GetRawText();
+                if (mhStr == targetHash) return true;
+            }
+
+            // Проверяем массив versions
             if (item.TryGetProperty("versions", out var versions) && versions.ValueKind == JsonValueKind.Array)
             {
                 foreach (var ver in versions.EnumerateArray())
                 {
                     if (ver.ValueKind == JsonValueKind.Array && ver.GetArrayLength() >= 2)
                     {
-                        if (ver[1].ToString() == targetHash) return true;
+                        string verHash = ver[1].ValueKind == JsonValueKind.String ? ver[1].GetString() : ver[1].GetRawText();
+                        if (verHash == targetHash) return true;
                     }
                 }
             }
             return false;
         }
 
-        // Возвращает список возможных имён карты (с учётом всех версий)
         private List<string> GetPossibleBaseNamesFromMapData(JsonNode node)
         {
             var result = new List<string>();
@@ -600,10 +853,8 @@ namespace EEditor
                     }
                     string baseId = string.Join("_", idParts);
 
-                    // Добавляем базовое имя (без версии)
                     result.Add(baseId);
 
-                    // Если есть versions, добавляем варианты с версиями
                     if (node["versions"] is JsonArray versionsArray)
                     {
                         foreach (var ver in versionsArray)
@@ -632,7 +883,6 @@ namespace EEditor
         private DiscordRPC client;
         private string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
 
-        // 4. Делаем свойство Config публичным/внутренним для доступа из FileSystemBridge
         public ConfigData Config { get; private set; }
 
         public MainWindow()
@@ -663,7 +913,6 @@ namespace EEditor
                 Config = new ConfigData();
             }
 
-            // Защита на случай, если файл конфигурации существовал, но поле GameFolderPath в нем отсутствовало (было null)
             if (Config.GameFolderPath == null)
             {
                 Config.GameFolderPath = "";
@@ -695,7 +944,6 @@ namespace EEditor
             }
         }
 
-        // 5. Делаем метод публичным, чтобы мост мог вызывать сохранение файла
         public void SaveConfig()
         {
             string json = JsonSerializer.Serialize(Config, new JsonSerializerOptions { WriteIndented = true });
@@ -733,7 +981,6 @@ namespace EEditor
             string targetUrl = isRemoteAvailable ? remoteUrl : localUri;
 
             webView.CoreWebView2.AddHostObjectToScript("backupManager", new BackupManagerBridge());
-            // 6. Передаем `this` (текущее окно) в конструктор FileSystemBridge
             webView.CoreWebView2.AddHostObjectToScript("fileSystem", new FileSystemBridge(this));
 
             webView.CoreWebView2.Navigate(targetUrl);
