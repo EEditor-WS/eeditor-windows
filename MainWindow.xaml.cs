@@ -363,75 +363,208 @@ namespace EEditor
                 try { File.WriteAllText(mapsDataPath, "{}"); } catch { }
             }
 
-            // Группировка файлов
+            // ========== НОВАЯ ГРУППИРОВКА ПО ИМЕНИ КАРТЫ ==========
+
+            var priorityMapNames = new List<string> { "parkourcat_euro4", "zachary_world", "jalhund_europe", "eenot_asia" };
+
+            // Словарь для группировки: ключ – имя карты, значение – список jsonKey
             var result = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
-            foreach (var mapFile in mapFiles)
+
+            // Функция получения имени карты из mapsData по хешу
+            string GetMapNameFromHash(string hash)
             {
-                // Используем относительный путь без расширения как ключ
-                string mapKey = Path.ChangeExtension(mapFile.RelativePath, null);
-                result[mapKey] = new List<string>();
+                if (string.IsNullOrEmpty(hash) || !mapsData.TryGetValue(hash, out var node))
+                    return null;
+
+                // Проверяем поля display_name, name
+                if (node is JsonObject obj)
+                {
+                    if (obj.TryGetPropertyValue("display_name", out var disp) && disp != null && disp.GetValueKind() == JsonValueKind.String)
+                        return disp.ToString();
+                    if (obj.TryGetPropertyValue("name", out var name) && name != null && name.GetValueKind() == JsonValueKind.String)
+                        return name.ToString();
+                }
+
+                // Иначе используем первое возможное имя
+                var possible = GetPossibleBaseNamesFromMapData(node);
+                return possible.FirstOrDefault();
             }
+
+            // Список для .json, которые не удалось сопоставить ни с одной картой
+            var unmatchedJsonKeys = new List<string>();
 
             foreach (var jsonData in jsonFilesData)
             {
                 string jsonRelativePath = jsonData.RelativePath;
                 string jsonName = jsonData.NameWithoutExt;
                 string mapHash = jsonData.MapHash;
-                bool matched = false;
+                string jsonKey = Path.ChangeExtension(jsonRelativePath, null);
 
-                int underscoreCount = jsonName.Count(c => c == '_');
-                bool useNameSearch = underscoreCount >= 3;
+                string mapKey = null; // итоговый ключ группировки
 
-                if (useNameSearch)
+                // 1. Пытаемся получить имя карты по хешу
+                if (!string.IsNullOrEmpty(mapHash))
                 {
-                    // Ищем .map файл, чьё имя (без расширения) является префиксом имени .json файла
-                    var matchedMap = mapFiles.FirstOrDefault(m =>
-                        jsonName.StartsWith(m.NameWithoutExt + "_", StringComparison.OrdinalIgnoreCase) ||
-                        jsonName.StartsWith(m.NameWithoutExt.Replace("_!", "") + "_", StringComparison.OrdinalIgnoreCase));
-
-                    if (matchedMap != null)
+                    var nameFromHash = GetMapNameFromHash(mapHash);
+                    if (!string.IsNullOrEmpty(nameFromHash))
                     {
-                        string mapKey = Path.ChangeExtension(matchedMap.RelativePath, null);
-                        // Используем относительный путь .json файла (без расширения)
-                        string jsonKey = Path.ChangeExtension(jsonRelativePath, null);
-                        result[mapKey].Add(jsonKey);
-                        matched = true;
+                        mapKey = nameFromHash;
                     }
                 }
 
-                if (!matched && !string.IsNullOrEmpty(mapHash))
+                // 2. Если не удалось, пытаемся сопоставить с .map по имени (как раньше)
+                if (string.IsNullOrEmpty(mapKey))
                 {
-                    if (mapsData.TryGetValue(mapHash, out JsonNode rawMapData))
+                    int underscoreCount = jsonName.Count(c => c == '_');
+                    bool useNameSearch = underscoreCount >= 3;
+
+                    if (useNameSearch)
                     {
-                        // Получаем список возможных имён карт (с учётом версий)
-                        var possibleBaseNames = GetPossibleBaseNamesFromMapData(rawMapData);
+                        var matchedMap = mapFiles.FirstOrDefault(m =>
+                            jsonName.StartsWith(m.NameWithoutExt + "_", StringComparison.OrdinalIgnoreCase) ||
+                            jsonName.StartsWith(m.NameWithoutExt.Replace("_!", "") + "_", StringComparison.OrdinalIgnoreCase));
 
-                        foreach (var baseName in possibleBaseNames)
+                        if (matchedMap != null)
                         {
-                            // Ищем .map файл с таким именем (с учётом суффикса _!)
-                            var mapByHash = mapFiles.FirstOrDefault(m =>
-                                string.Equals(m.NameWithoutExt, baseName, StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals(m.NameWithoutExt, baseName + "_!", StringComparison.OrdinalIgnoreCase));
-
-                            if (mapByHash != null)
-                            {
-                                string mapKey = Path.ChangeExtension(mapByHash.RelativePath, null);
-                                string jsonKey = Path.ChangeExtension(jsonRelativePath, null);
-                                result[mapKey].Add(jsonKey);
-                                break;
-                            }
+                            mapKey = Path.ChangeExtension(matchedMap.RelativePath, null);
                         }
                     }
                 }
+
+                // 3. Если всё ещё нет, но есть хеш и данные в mapsData – пробуем найти .map по возможным именам
+                if (string.IsNullOrEmpty(mapKey) && !string.IsNullOrEmpty(mapHash) && mapsData.ContainsKey(mapHash))
+                {
+                    var possibleNames = GetPossibleBaseNamesFromMapData(mapsData[mapHash]);
+                    foreach (var baseName in possibleNames)
+                    {
+                        var mapByHash = mapFiles.FirstOrDefault(m =>
+                            string.Equals(m.NameWithoutExt, baseName, StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals(m.NameWithoutExt, baseName + "_!", StringComparison.OrdinalIgnoreCase));
+
+                        if (mapByHash != null)
+                        {
+                            mapKey = Path.ChangeExtension(mapByHash.RelativePath, null);
+                            break;
+                        }
+                    }
+                }
+
+                // 4. Если имя не определено, помечаем как unmatched
+                if (string.IsNullOrEmpty(mapKey))
+                {
+                    unmatchedJsonKeys.Add(jsonKey);
+                    continue;
+                }
+
+                // 5. Проверка на принадлежность к приоритетным (по началу имени)
+                bool isPriority = false;
+                foreach (var priorityName in priorityMapNames)
+                {
+                    if (string.Equals(mapKey, priorityName, StringComparison.OrdinalIgnoreCase) ||
+                        mapKey.StartsWith(priorityName + "_", StringComparison.OrdinalIgnoreCase))
+                    {
+                        mapKey = priorityName;
+                        isPriority = true;
+                        break;
+                    }
+                }
+
+                // Добавляем в результат
+                if (!result.ContainsKey(mapKey))
+                    result[mapKey] = new List<string>();
+                result[mapKey].Add(jsonKey);
             }
 
-            var filteredResult = result.Where(kvp => kvp.Value.Count > 0).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            // Обработка несопоставленных .json
+            foreach (var jsonKey in unmatchedJsonKeys)
+            {
+                string fileName = Path.GetFileNameWithoutExtension(jsonKey);
+                bool assigned = false;
+
+                // Проверяем, не относится ли к приоритетной карте (по префиксу)
+                foreach (var priorityName in priorityMapNames)
+                {
+                    if (string.Equals(fileName, priorityName, StringComparison.OrdinalIgnoreCase) ||
+                        fileName.StartsWith(priorityName + "_", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (!result.ContainsKey(priorityName))
+                            result[priorityName] = new List<string>();
+                        result[priorityName].Add(jsonKey);
+                        assigned = true;
+                        break;
+                    }
+                }
+
+                if (!assigned)
+                {
+                    if (!result.ContainsKey("other"))
+                        result["other"] = new List<string>();
+                    result["other"].Add(jsonKey);
+                }
+            }
+
+            // Добавляем приоритетные ключи, если их ещё нет (для случая, когда нет .json, но они должны присутствовать)
+            foreach (var name in priorityMapNames)
+            {
+                if (!result.ContainsKey(name))
+                    result[name] = new List<string>();
+            }
+
+            // Удаляем пустые ключи
+            var filteredResult = result
+                .Where(kvp => kvp.Value.Count > 0)
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            // Сортируем значения внутри каждого ключа
             foreach (var key in filteredResult.Keys.ToList())
             {
-                filteredResult[key] = filteredResult[key].OrderBy(x => x).ToList();
+                filteredResult[key] = filteredResult[key].OrderBy(x => x, StringComparer.OrdinalIgnoreCase).ToList();
             }
 
-            return JsonSerializer.Serialize(filteredResult);
+            // Формируем итоговый упорядоченный словарь
+            var orderedResult = new Dictionary<string, List<string>>();
+
+            // 1. Приоритетные (в заданном порядке)
+            foreach (var priorityName in priorityMapNames)
+            {
+                if (filteredResult.ContainsKey(priorityName))
+                {
+                    orderedResult[priorityName] = filteredResult[priorityName];
+                    filteredResult.Remove(priorityName);
+                }
+            }
+
+            // 2. Корневые (без разделителей), кроме "other"
+            var rootKeys = filteredResult.Keys
+                .Where(k => !k.Contains(Path.DirectorySeparatorChar) && !k.Equals("other", StringComparison.OrdinalIgnoreCase))
+                .OrderBy(k => k, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            foreach (var key in rootKeys)
+            {
+                orderedResult[key] = filteredResult[key];
+                filteredResult.Remove(key);
+            }
+
+            // 3. "other"
+            if (filteredResult.ContainsKey("other"))
+            {
+                orderedResult["other"] = filteredResult["other"];
+                filteredResult.Remove("other");
+            }
+
+            // 4. Вложенные (с разделителем)
+            var nestedKeys = filteredResult.Keys
+                .Where(k => k.Contains(Path.DirectorySeparatorChar))
+                .OrderBy(k => k, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            foreach (var key in nestedKeys)
+            {
+                orderedResult[key] = filteredResult[key];
+            }
+
+            return JsonSerializer.Serialize(orderedResult);
         }
 
         private bool IsHashMatch(JsonElement item, string targetHash)
