@@ -10,3 +10,5 @@ bin/x64/Release/eeditor.zip
 /bin
 /bin
 /.vs
+/bin/x64/Release/net8.0-windows/backups
+/bin/x64/Release/net8.0-windows/backups
